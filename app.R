@@ -528,7 +528,13 @@ createLeaderBoard_4dr<-function(data_instance,row_length){
 #----
 # Add Days of the Week:
 match_table$dow<-as.character(wday(match_table$date, label=TRUE))
-print(match_table$dow) # DEBUG
+print(summary(match_table$dow)) # DEBUG
+print(typeof(match_table))
+print(class(match_table))
+print(sapply(match_table, class))
+print(sapply(match_table, attributes))
+print(attributes(match_table))
+print(names(match_table))
 
 # Find number of games played in event:
 game_max<-max(match_table$game_no)
