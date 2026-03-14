@@ -33,7 +33,7 @@ Sys.setenv(SUPABASE_DB_HOST = "db.bnnisnnqvsghpyktijal.supabase.co")
 Sys.setenv(SUPABASE_DB_PORT = "5432")
 Sys.setenv(SUPABASE_DB_NAME = "postgres")
 Sys.setenv(SUPABASE_DB_USER = "postgres")
-Sys.setenv(SUPABASE_DB_PASS = "k$4m.6Cs23HZ*nY")   # replace with your password
+Sys.setenv(SUPABASE_DB_PASS = Sys.getenv("SUPABASE_PW"))   # Password stored on Connect Cloud: Admin/Settings > Variables
 
 dsn <- Sys.getenv("SUPABASE_DB_DSN", unset = "")
 if (nzchar(dsn)) {
