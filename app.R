@@ -15,13 +15,6 @@ library('formattable')
 library(DBI)
 library(RPostgres)
 
-# Authenticating connection to Google Sheets using auth file in '.secrets' (uploaded wtih app.R)...
-gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
-
-# Load data (from Google Sheets)
-match_table<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
-google_rank_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
-
 
 # Set Supabase connection env. parameters:
 Sys.setenv(SUPABASE_DB_HOST = "aws-1-eu-west-1.pooler.supabase.com")
@@ -60,6 +53,14 @@ con <- dbConnect(
 print(dbGetQuery(con, "SELECT current_database() AS db, current_user AS user, inet_server_addr() AS server_ip;"))
 # 1) List available tables (schema-qualified)
 print(dbListTables(con))           # lists tables in the search_path
+
+# Authenticating connection to Google Sheets using auth file in '.secrets' (uploaded wtih app.R)...
+gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
+
+# Load data (from Google Sheets + Supabase)
+#match_table<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
+match_table <- dbReadTable(con, "games")   # equivalent to SELECT * FROM "games"
+google_rank_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
 
 
 # Functions:
