@@ -12,7 +12,8 @@ library('ggtext')
 library('googlesheets4')
 library('lubridate')
 library('formattable')
-
+library(DBI)
+library(RPostgres)
 
 # Authenticating connection to Google Sheets using auth file in '.secrets' (uploaded wtih app.R)...
 gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
@@ -21,21 +22,12 @@ gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
 match_table<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
 google_rank_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
 
-# Postgres example
-#postgresql://postgres:[YOUR-PASSWORD]@db.bnnisnnqvsghpyktijal.supabase.co:5432/postgres
-# install.packages(c("DBI","RPostgres"))  # run once if needed
-library(DBI)
-library(RPostgres)
 
-# Option 1: single DSN from env
-# set in R session (not global to OS)
-#Sys.setenv(SUPABASE_DB_HOST = "db.bnnisnnqvsghpyktijal.supabase.co")
+# Set Supabase connection env. parameters:
 Sys.setenv(SUPABASE_DB_HOST = "aws-1-eu-west-1.pooler.supabase.com")
 Sys.setenv(SUPABASE_DB_PORT = "5432")
 Sys.setenv(SUPABASE_DB_NAME = "postgres")
-#Sys.setenv(SUPABASE_DB_USER = "postgres")
 Sys.setenv(SUPABASE_DB_USER = "postgres.bnnisnnqvsghpyktijal")
-
 
 if(Sys.getenv('SHINY_PORT') == ""){
   pw<-read.table(file='~/bin/R_scripts/.secrets/supabase', header = FALSE) # Read password locally
@@ -44,28 +36,25 @@ if(Sys.getenv('SHINY_PORT') == ""){
   Sys.setenv(SUPABASE_DB_PASS = Sys.getenv("SUPABASE_PW"))   # Password stored on Connect Cloud: Admin/Settings > Variables
 }
 
-dsn <- Sys.getenv("SUPABASE_DB_DSN", unset = "")
-if (nzchar(dsn)) {
-  con <- dbConnect(RPostgres::Postgres(), dsn = dsn)
-} else {
-  # Option 2: components from env
-  host <- Sys.getenv("SUPABASE_DB_HOST", "db.bnnisnnqvsghpyktijal.supabase.co")
-  port <- as.integer(Sys.getenv("SUPABASE_DB_PORT", "5432"))
-  dbname <- Sys.getenv("SUPABASE_DB_NAME", "postgres")
-  user <- Sys.getenv("SUPABASE_DB_USER", "postgres")
-  password <- Sys.getenv("SUPABASE_DB_PASS")
-  if (!nzchar(password)) stop("Set SUPABASE_DB_PASS environment variable")
-  
-  con <- dbConnect(
-    RPostgres::Postgres(),
-    host = host,
-    port = port,
-    dbname = dbname,
-    user = user,
-    password = password,
-    sslmode = "require"
-  )
-}
+# Store environment parameters in variables:
+host <- Sys.getenv("SUPABASE_DB_HOST", "db.bnnisnnqvsghpyktijal.supabase.co") # Not sure if second argument is needed? Same for next few lines
+port <- as.integer(Sys.getenv("SUPABASE_DB_PORT", "5432"))
+dbname <- Sys.getenv("SUPABASE_DB_NAME", "postgres")
+user <- Sys.getenv("SUPABASE_DB_USER", "postgres")
+password <- Sys.getenv("SUPABASE_DB_PASS")
+if (!nzchar(password)) stop("Set SUPABASE_DB_PASS environment variable")
+
+# Establish DB connection:
+con <- dbConnect(
+  RPostgres::Postgres(),
+  host = host,
+  port = port,
+  dbname = dbname,
+  user = user,
+  password = password,
+  sslmode = "require"
+)
+
 
 # Quick test
 print(dbGetQuery(con, "SELECT current_database() AS db, current_user AS user, inet_server_addr() AS server_ip;"))
