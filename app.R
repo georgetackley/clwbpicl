@@ -29,10 +29,12 @@ library(RPostgres)
 
 # Option 1: single DSN from env
 # set in R session (not global to OS)
-Sys.setenv(SUPABASE_DB_HOST = "db.bnnisnnqvsghpyktijal.supabase.co")
+#Sys.setenv(SUPABASE_DB_HOST = "db.bnnisnnqvsghpyktijal.supabase.co")
+Sys.setenv(SUPABASE_DB_HOST = "aws-1-eu-west-1.pooler.supabase.com")
 Sys.setenv(SUPABASE_DB_PORT = "5432")
 Sys.setenv(SUPABASE_DB_NAME = "postgres")
-Sys.setenv(SUPABASE_DB_USER = "postgres")
+#Sys.setenv(SUPABASE_DB_USER = "postgres")
+Sys.setenv(SUPABASE_DB_USER = "postgres.bnnisnnqvsghpyktijal")
 Sys.setenv(SUPABASE_DB_PASS = Sys.getenv("SUPABASE_PW"))   # Password stored on Connect Cloud: Admin/Settings > Variables
 
 dsn <- Sys.getenv("SUPABASE_DB_DSN", unset = "")
