@@ -61,7 +61,8 @@ gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
 #match_table<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
 match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "games"
 google_rank_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
-print(nrow(google_rank_table))
+print(paste0("google_rank_table_no_rows: '",nrow(google_rank_table)))
+print(paste0("Summary 'match_table: '",summary(match_table)))
 
 # Functions:
 makeStatTable<-function(stat_data){
