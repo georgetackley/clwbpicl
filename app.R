@@ -531,8 +531,8 @@ match_table$dow<-as.character(wday(match_table$date, label=TRUE))
 print(summary(match_table$dow)) # DEBUG
 print(typeof(match_table))
 print(class(match_table))
-print(sapply(match_table, class))
-print(sapply(match_table, attributes))
+#print(sapply(match_table, class))
+#print(sapply(match_table, attributes))
 print(attributes(match_table))
 print(names(match_table))
 
@@ -561,6 +561,12 @@ match_table_long <- data.frame(ID=character(),
 
 print("Summary 'match_table_long: '") # DEBUG
 print(summary(match_table_long)) # DEBUG
+print(typeof(match_table_long))
+print(class(match_table_long))
+#print(sapply(match_table_long, class))
+#print(sapply(match_table_long, attributes))
+print(attributes(match_table_long))
+print(names(match_table_long))
 
 for (i in 1:game_max){
   row1<-match_table[match_table$game_no==i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%
