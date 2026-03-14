@@ -62,7 +62,8 @@ gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
 match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "games"
 google_rank_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
 print(paste0("google_rank_table_no_rows: '",nrow(google_rank_table)))
-print(paste0("Summary 'match_table: '",summary(match_table)))
+print("Summary 'match_table: '")
+print(summary(match_table))
 
 # Functions:
 makeStatTable<-function(stat_data){
@@ -527,6 +528,8 @@ createLeaderBoard_4dr<-function(data_instance,row_length){
 #----
 # Add Days of the Week:
 match_table$dow<-as.character(wday(match_table$date, label=TRUE))
+print(match_table$dow) # DEBUG
+
 # Find number of games played in event:
 game_max<-max(match_table$game_no)
 # Create empty data.frame to store results in 'long' format (i.e. one row per player per game)
@@ -549,6 +552,9 @@ match_table_long <- data.frame(ID=character(),
                                stringsAsFactors = FALSE)
 
 # Reformat to long format (see above) and store in match_table_long:
+
+print("Summary 'match_table_long: '") # DEBUG
+print(summary(match_table_long)) # DEBUG
 
 for (i in 1:game_max){
   row1<-match_table[match_table$game_no==i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%
@@ -573,6 +579,9 @@ for (i in 1:game_max){
   
   match_table_long<-bind_rows(match_table_long,row1,row2,row3,row4)
 }
+
+print("Summary 'match_table_long: '") # DEBUG
+print(summary(match_table_long)) # DEBUG
 
 # All players:
 player_list<-unique(match_table_long$ID)
