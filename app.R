@@ -35,9 +35,14 @@ Sys.setenv(SUPABASE_DB_PORT = "5432")
 Sys.setenv(SUPABASE_DB_NAME = "postgres")
 #Sys.setenv(SUPABASE_DB_USER = "postgres")
 Sys.setenv(SUPABASE_DB_USER = "postgres.bnnisnnqvsghpyktijal")
-Sys.setenv(SUPABASE_DB_PASS = Sys.getenv("SUPABASE_PW"))   # Password stored on Connect Cloud: Admin/Settings > Variables
 
-print(Sys.getenv('SHINY_PORT') == "")
+
+if(Sys.getenv('SHINY_PORT') == ""){
+  pw<-read.table(file='~/bin/R_scripts/.secrets/supabase', header = FALSE) # Read password locally
+  Sys.setenv(SUPABASE_DB_PASS = as.character(pw[1]))
+} else {
+  Sys.setenv(SUPABASE_DB_PASS = Sys.getenv("SUPABASE_PW"))   # Password stored on Connect Cloud: Admin/Settings > Variables
+}
 
 dsn <- Sys.getenv("SUPABASE_DB_DSN", unset = "")
 if (nzchar(dsn)) {
