@@ -20,6 +20,47 @@ gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
 match_table<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
 google_rank_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
 
+# Postgres example
+#postgresql://postgres:[YOUR-PASSWORD]@db.bnnisnnqvsghpyktijal.supabase.co:5432/postgres
+# install.packages(c("DBI","RPostgres"))  # run once if needed
+library(DBI)
+library(RPostgres)
+
+# Option 1: single DSN from env
+# set in R session (not global to OS)
+Sys.setenv(SUPABASE_DB_HOST = "db.bnnisnnqvsghpyktijal.supabase.co")
+Sys.setenv(SUPABASE_DB_PORT = "5432")
+Sys.setenv(SUPABASE_DB_NAME = "postgres")
+Sys.setenv(SUPABASE_DB_USER = "postgres")
+Sys.setenv(SUPABASE_DB_PASS = "k$4m.6Cs23HZ*nY")   # replace with your password
+
+dsn <- Sys.getenv("SUPABASE_DB_DSN", unset = "")
+if (nzchar(dsn)) {
+  con <- dbConnect(RPostgres::Postgres(), dsn = dsn)
+} else {
+  # Option 2: components from env
+  host <- Sys.getenv("SUPABASE_DB_HOST", "db.bnnisnnqvsghpyktijal.supabase.co")
+  port <- as.integer(Sys.getenv("SUPABASE_DB_PORT", "5432"))
+  dbname <- Sys.getenv("SUPABASE_DB_NAME", "postgres")
+  user <- Sys.getenv("SUPABASE_DB_USER", "postgres")
+  password <- Sys.getenv("SUPABASE_DB_PASS")
+  if (!nzchar(password)) stop("Set SUPABASE_DB_PASS environment variable")
+  
+  con <- dbConnect(
+    RPostgres::Postgres(),
+    host = host,
+    port = port,
+    dbname = dbname,
+    user = user,
+    password = password,
+    sslmode = "require"
+  )
+}
+
+# Quick test
+print(dbGetQuery(con, "SELECT current_database() AS db, current_user AS user, inet_server_addr() AS server_ip;"))
+
+
 # Functions:
 makeStatTable<-function(stat_data){
   if(nrow(stat_data)==0){
