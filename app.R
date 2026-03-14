@@ -13,6 +13,8 @@ library('googlesheets4')
 library('lubridate')
 library('formattable')
 
+renv::install("DBI")
+
 # Authenticating connection to Google Sheets using auth file in '.secrets' (uploaded wtih app.R)...
 gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
 
