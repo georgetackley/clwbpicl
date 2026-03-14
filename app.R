@@ -63,7 +63,7 @@ if (nzchar(dsn)) {
 # Quick test
 print(dbGetQuery(con, "SELECT current_database() AS db, current_user AS user, inet_server_addr() AS server_ip;"))
 # 1) List available tables (schema-qualified)
-dbListTables(con)           # lists tables in the search_path
+print(dbListTables(con))           # lists tables in the search_path
 
 
 # Functions:
