@@ -66,7 +66,6 @@ print("Summary 'match_table (Postgres): '")
 print(summary(match_table))
 print("Summary 'match_table (Google): '")
 print(summary(test_match_table))
-match_table<-test_match_table
 
 # Functions:
 makeStatTable<-function(stat_data){
