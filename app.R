@@ -65,7 +65,7 @@ print(paste0("google_rank_table_no_rows: '",nrow(google_rank_table)))
 print("Summary 'match_table (Postgres): '")
 print(summary(match_table))
 print("Summary 'match_table (Google): '")
-print(summary(match_table))
+print(summary(test_match_table))
 
 
 # Functions:
