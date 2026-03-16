@@ -57,15 +57,17 @@ print(dbListTables(con))           # lists tables in the search_path
 # Authenticating connection to Google Sheets using auth file in '.secrets' (uploaded wtih app.R)...
 gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
 
-# Load data (from Google Sheets + Supabase)
-test_match_table<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
+## Load data (from Google Sheets + Supabase)
+# match_table_goog<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
 match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
+# match_table<-read.table('~/Desktop/mastersheet_rows.csv',sep=',',header = TRUE)
+match_table$date <- ymd(match_table$date)
 google_rank_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
-print(paste0("google_rank_table_no_rows: '",nrow(google_rank_table)))
-print("Summary 'match_table (Postgres): '")
-print(summary(match_table))
-print("Summary 'match_table (Google): '")
-print(summary(test_match_table))
+# print(paste0("google_rank_table_no_rows: '",nrow(google_rank_table)))
+# print("Summary 'match_table (Postgres): '")
+# print(summary(match_table))
+# print("Summary 'match_table (Google): '")
+# print(summary(test_match_table))
 
 # Functions:
 makeStatTable<-function(stat_data){
@@ -720,7 +722,8 @@ server <- function(input, output) {
                                           indoor %in% choice_indoor &
                                           dow %in% choice_day &
                                           event_type %in% choice_event_type &
-                                          date %in% as.POSIXct(choice_date,tz='UTC'))
+                                          date %in% ymd(choice_date))
+                                          #date %in% as.POSIXct(choice_date,tz='UTC')) # Changed this for postgres date format compatibility - not sure what the precise format difference was
     data
   })
   
