@@ -56,8 +56,8 @@ print(dbListTables(con))           # lists tables in the search_path
 # match_table_goog<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
 match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
 # match_table<-read.table('~/Desktop/mastersheet_rows.csv',sep=',',header = TRUE)
-match_table$date_time <- ymd_hms(match_table$date_time)
-match_table %>% arrange(date_time)
+match_table$date_time <- ymd_hms(match_table$date_time) #Convert to lubridate date/time format
+match_table <- match_table %>% arrange(date_time) #Sort table by date_time
 print(match_table$date_time[1:2]) # DEBUG
 # google_rank_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
 init_4dr_table<-dbReadTable(con, "4DR_initialiser")
