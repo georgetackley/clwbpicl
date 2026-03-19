@@ -270,6 +270,7 @@ processInputs<-function(indoor,location,day,date,eventType){
   # Read-in Date selection
   if(date=="All"){
     choice_date<-unique(match_table$date_time)
+    print(paste("All dates: ",choice_date))
   } else {
     choice_date<-between(match_table$date_time, 
                         ymd_hms(paste(date,"00:00:01")),
@@ -843,7 +844,7 @@ ui <- page_fluid(
                        selectInput("date",
                                    "Date:",
                                    c("All",
-                                     unique(as_date(match_table$date_time)))))
+                                     unique(as.character(as_date(match_table$date_time))))))
   ),
   layout_columns(checkboxInput("rotate", "Rotate charts? (ideal for smartphones)", FALSE))
   ),
