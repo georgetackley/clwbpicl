@@ -714,7 +714,10 @@ server <- function(input, output) {
                                           indoor %in% choice_indoor &
                                           dow %in% choice_day &
                                           event_type %in% choice_event_type &
-                                          date_time %in% ymd_hms(choice_date))
+                                          between(date_time, 
+                                                  ymd_hms(paste(choice_date,"00:00:01")),
+                                                  ymd_hms(paste(choice_date,"23:59:59")))
+                                          )
                                           #date %in% as.POSIXct(choice_date,tz='UTC')) # Changed this for postgres date format compatibility - not sure what the precise format difference was
     data
   })
@@ -784,7 +787,7 @@ server <- function(input, output) {
       
       rows_index<-input$table_rows_selected
       plot_data<-sequential_ranks_calc(c(data_instance$ID[rows_index]))
-      g<-ggplot(plot_data, aes(x=date, y=rank4dr)) +
+      g<-ggplot(plot_data, aes(x=date_time, y=rank4dr)) +
         ggtitle("Player 4DRs")+
         theme_classic()+
         geom_line(aes(color=ID))+
