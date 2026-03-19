@@ -562,16 +562,6 @@ match_table_long <- data.frame(ID=character(),
                                stringsAsFactors = FALSE)
 
 # Reformat to long format (see above) and store in match_table_long:
-
-# print("Summary 'match_table_long: '") # DEBUG
-# print(summary(match_table_long)) # DEBUG
-# print(typeof(match_table_long))
-# print(class(match_table_long))
-# print(sapply(match_table_long, class))
-# print(sapply(match_table_long, attributes))
-# print(attributes(match_table_long))
-# print(names(match_table_long))
-
 for (i in 1:game_max){
   row1<-match_table[match_table$game_no==i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%
     select(ID=p1,partner=p2,opp1=p3,opp2=p4,score_side=p1p2_score,score_opp=p3p4_score,score_method,
@@ -596,8 +586,12 @@ for (i in 1:game_max){
   match_table_long<-bind_rows(match_table_long,row1,row2,row3,row4)
 }
 
-# print("Summary 'match_table_long: '") # DEBUG
-# print(summary(match_table_long)) # DEBUG
+print("Dates 'match_table_long: '") # DEBUG
+print(summary(match_table_long$date_time)) # DEBUG
+
+print("Dates 'match_table: '") # DEBUG
+print(summary(match_table$date_time)) # DEBUG
+
 
 # All players:
 player_list<-unique(match_table_long$ID)
