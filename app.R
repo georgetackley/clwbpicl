@@ -50,7 +50,7 @@ print(dbGetQuery(con, "SELECT current_database() AS db, current_user AS user, in
 print(dbListTables(con))           # lists tables in the search_path
 
 # Authenticating connection to Google Sheets using auth file in '.secrets' (uploaded wtih app.R)...
-gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
+#gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
 
 ## Load data (from Google Sheets + Supabase)
 # match_table_goog<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
@@ -59,10 +59,6 @@ match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "
 match_table$date_time <- ymd_hm(match_table$date_time)
 # google_rank_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
 init_4dr_table<-dbReadTable(con, "4DR_initialiser")
-# print("Summary 'match_table (Postgres): '")
-# print(summary(match_table))
-# print("Summary 'match_table (Google): '")
-# print(summary(test_match_table))
 
 # Functions:
 makeStatTable<-function(stat_data){
@@ -587,9 +583,13 @@ print(summary(match_table_long$date_time)) # DEBUG
 print("Dates 'match_table: '") # DEBUG
 print(summary(match_table$date_time)) # DEBUG
 
+print("4DR table summary") # DEBUG
+print(summary(init_4dr_table)) # DEBUG
+
+
 
 # All players:
-player_list<-unique(match_table_long$ID)
+player_list<-unique(match_table_long$ID) # I think this should now be pullede straight from member list??
 
 ## Rank tables
 # Create table of ranks with all players as 3.000:
