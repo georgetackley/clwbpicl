@@ -245,7 +245,7 @@ sequential_ranks_calc<-function(ID){
   }
   return(data_output)
 }
-processInputs<-function(indoor,location,day,date_time,eventType){
+processInputs<-function(indoor,location,day,date,eventType){
   if(indoor=="Indoor"){
     choice_indoor=1
   } else if(indoor=="Outdoor"){
@@ -268,10 +268,12 @@ processInputs<-function(indoor,location,day,date_time,eventType){
     choice_day=day
   }
   # Read-in Date selection
-  if(date_time=="All"){
-    choice_date=unique(as_date(match_table$date_time))
+  if(date=="All"){
+    choice_date<-unique(match_table$date_time)
   } else {
-    choice_date=date_time
+    choice_date<-between(match_table$date_time, 
+                        ymd_hms(paste(date,"00:00:01")),
+                        ymd_hms(paste(date,"23:59:59")))
   }
   # Read-in Date selection
   if(eventType=="All"){
@@ -715,10 +717,7 @@ server <- function(input, output) {
                                           indoor %in% choice_indoor &
                                           dow %in% choice_day &
                                           event_type %in% choice_event_type &
-                                          between(date_time, 
-                                                  ymd_hms(paste(choice_date,"00:00:01")),
-                                                  ymd_hms(paste(choice_date,"23:59:59")))
-                                          )
+                                          date_time %in% choice_date)
                                           #date %in% as.POSIXct(choice_date,tz='UTC')) # Changed this for postgres date format compatibility - not sure what the precise format difference was
     data
   })
