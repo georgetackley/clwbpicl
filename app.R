@@ -532,8 +532,8 @@ match_table$dow<-as.character(wday(match_table$date, label=TRUE))
 # print(attributes(match_table))
 # print(names(match_table))
 
-# Find number of games played in event:
-game_max<-max(match_table$game_no)
+# Find number of games(=rows) in match_table:
+game_max<-nrow(match_table)
 # Create empty data.frame to store results in 'long' format (i.e. one row per player per game)
 match_table_long <- data.frame(ID=character(),
                                date_time=as.Date(character()), #update to 'date_time' 19032026
