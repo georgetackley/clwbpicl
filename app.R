@@ -804,7 +804,7 @@ ui <- page_fluid(
   
   # Leaderboards:
   card(card_header("Ladder Leaderboards"),
-       div(p(paste0("(Last updated: ",as_date(dmy_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
+       div(p(paste0("(Last updated: ",as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
   layout_columns(
     card(card_header("LLC Thursday"),
          formattableOutput("thu_ladder")),
