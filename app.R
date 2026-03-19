@@ -804,7 +804,7 @@ ui <- page_fluid(
   
   # Leaderboards:
   card(card_header("Ladder Leaderboards"),
-       div(p(paste0("(Last updated: ",ymd(max(match_table$date_time)),")"),style="font-size: 12px;")),
+       div(p(paste0("(Last updated: ",as_date(dmy_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
   layout_columns(
     card(card_header("LLC Thursday"),
          formattableOutput("thu_ladder")),
@@ -839,7 +839,7 @@ ui <- page_fluid(
                        selectInput("date",
                                    "Date:",
                                    c("All",
-                                     unique(as.character(as_date(match_table$date_time))))))
+                                     unique(as.character(as_date(dmy_hms(match_table$date_time)))))))
   ),
   layout_columns(checkboxInput("rotate", "Rotate charts? (ideal for smartphones)", FALSE))
   ),
