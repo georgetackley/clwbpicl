@@ -559,22 +559,22 @@ match_table_long <- data.frame(ID=character(),
 for (i in 1:game_max){
   row1<-match_table[i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%  // match_table$game_no==i
     select(ID=p1,partner=p2,opp1=p3,opp2=p4,score_side=p1p2_score,score_opp=p3p4_score,score_method,
-           location,date=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
+           location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
   row1$game<-i
   
   row2<-match_table[i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%
     select(ID=p2,partner=p1,opp1=p3,opp2=p4,score_side=p1p2_score,score_opp=p3p4_score,score_method,
-           location,date=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
+           location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
   row2$game<-i
   
   row3<-match_table[i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%
     select(ID=p3,partner=p4,opp1=p1,opp2=p2,score_side=p3p4_score,score_opp=p1p2_score,score_method,
-           location,date=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
+           location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
   row3$game<-i
   
   row4<-match_table[i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%
     select(ID=p4,partner=p3,opp1=p1,opp2=p2,score_side=p3p4_score,score_opp=p1p2_score,score_method,
-           location,date=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
+           location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
   row4$game<-i
   
   match_table_long<-bind_rows(match_table_long,row1,row2,row3,row4)
