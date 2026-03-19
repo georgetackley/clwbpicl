@@ -268,7 +268,7 @@ processInputs<-function(indoor,location,day,date_time,eventType){
   }
   # Read-in Date selection
   if(date_time=="All"){
-    choice_date=unique(match_table$date_time)
+    choice_date=unique(as_date(match_table$date_time))
   } else {
     choice_date=date_time
   }
