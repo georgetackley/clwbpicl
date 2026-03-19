@@ -641,12 +641,12 @@ server <- function(input, output) {
     thu_stats<-match_table_long %>% filter(dow %in% "Thu" & event_type %in% "ladder")
     if (nrow(thu_stats) != 0){
       thu_this<-makeStatTable(thu_stats)
-      last_session<-max(thu_stats$date_time)
-      if (nrow(thu_stats[thu_stats$date_time != last_session,])==0){
+      last_session<-max(as_date(thu_stats$date_time))
+      if (nrow(thu_stats[thu_stats$date_time < last_session,])==0){
         print("No previous dates for Thu leaderboard comparison")
         thu_prev <- 0
       } else {
-        thu_prev<-makeStatTable(thu_stats[thu_stats$date_time != last_session,])
+        thu_prev<-makeStatTable(thu_stats[thu_stats$date_time < last_session,])
       }
       createLeaderBoard(thu_this,thu_prev,10)
     } else {
@@ -690,7 +690,7 @@ server <- function(input, output) {
     lhs_stats<-match_table_long %>% filter(location %in% "Llanishen HS" & event_type %in% "ladder")
     if (nrow(lhs_stats) != 0){
       lhs_this<-makeStatTable(lhs_stats)
-      last_session<-max(lhs_stats$date_time)
+      # last_session<-max(lhs_stats$date_time)
       # if (nrow(lhs_stats[lhs_stats$date != last_session,])==0){
       #   print("No previous dates for Thu leaderboard comparison")
       #   lhs_prev <- 0
