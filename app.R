@@ -22,12 +22,7 @@ Sys.setenv(SUPABASE_DB_PORT = "5432")
 Sys.setenv(SUPABASE_DB_NAME = "postgres")
 Sys.setenv(SUPABASE_DB_USER = "postgres.bnnisnnqvsghpyktijal")
 
-if(Sys.getenv('SHINY_PORT') == ""){
-  pw<-read.table(file='~/bin/R_scripts/.secrets/supabase', header = FALSE) # Read password locally
-  Sys.setenv(SUPABASE_DB_PASS = as.character(pw[1]))
-} else {
-  Sys.setenv(SUPABASE_DB_PASS = Sys.getenv("SUPABASE_PW"))   # Password stored on Connect Cloud: Admin/Settings > Variables
-}
+Sys.setenv(SUPABASE_DB_PASS = Sys.getenv("SUPABASE_PW"))   # Password stored on Connect Cloud: Admin/Settings > Variables
 
 # Store environment parameters in variables:
 host <- Sys.getenv("SUPABASE_DB_HOST", "db.bnnisnnqvsghpyktijal.supabase.co") # Not sure if second argument is needed? Same for next few lines
@@ -62,8 +57,8 @@ gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
 match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
 # match_table<-read.table('~/Desktop/mastersheet_rows.csv',sep=',',header = TRUE)
 match_table$date_time <- ymd_hm(match_table$date_time)
-google_rank_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
-# print(paste0("google_rank_table_no_rows: '",nrow(google_rank_table)))
+# google_rank_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
+init_4dr_table<-dbReadTable(con, "4DR_initialiser")
 # print("Summary 'match_table (Postgres): '")
 # print(summary(match_table))
 # print("Summary 'match_table (Google): '")
@@ -599,9 +594,9 @@ player_list<-unique(match_table_long$ID)
 ## Rank tables
 # Create table of ranks with all players as 3.000:
 rank_table_all<-data.frame(ID=player_list,rank=3)
-# Merge with historical ranks to replace '3.000's where known ('google_rank_table')
-for(id in 1:nrow(google_rank_table)){
-  rank_table_all$rank[rank_table_all$ID %in% google_rank_table$ID[id]] <- google_rank_table$rank[id]
+# Merge with historical ranks to replace '3.000's where known ('init_4dr_table')
+for(id in 1:nrow(init_4dr_table)){
+  rank_table_all$rank[rank_table_all$ID %in% init_4dr_table$ID[id]] <- init_4dr_table$rank[id]
 }
 # Store ranks in rank_table
 rank_table<-rank_table_all
