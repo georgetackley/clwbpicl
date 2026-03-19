@@ -839,7 +839,7 @@ ui <- page_fluid(
                        selectInput("date",
                                    "Date:",
                                    c("All",
-                                     unique(as.character(match_table$date_time)))))
+                                     unique(as.character(as_date(match_table$date_time))))))
   ),
   layout_columns(checkboxInput("rotate", "Rotate charts? (ideal for smartphones)", FALSE))
   ),
