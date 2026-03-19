@@ -273,11 +273,10 @@ processInputs<-function(indoor,location,day,date,eventType){
     print(paste("All dates: ",choice_date))
   } else {
     choice_date<-between(match_table$date_time, 
-                        ymd_hms(paste(date,"00:00:01")),
-                        ymd_hms(paste(date,"23:59:59")))
+                        date,date+dhours(24))
     print(paste("Chosen dates: ",choice_date))
   }
-  # Read-in Date selection
+  # Read-in Event selection
   if(eventType=="All"){
     choice_event_type=unique(match_table$event_type)
   } else {
