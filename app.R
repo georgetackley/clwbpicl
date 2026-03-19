@@ -114,9 +114,9 @@ makeStatTable<-function(stat_data){
           round(rank_table[rank_table$ID==i,]$rank,4)
         #NB the following assumes a maximum of ONE 'session' per DATE.
         tmp_stats_table[tmp_stats_table$ID==i,]$sp<-
-          length(unique(stat_data[stat_data$ID==i,]$date))
+          length(unique(stat_data[stat_data$ID==i,]$date_time))
         tmp_stats_table[tmp_stats_table$ID==i,]$sa<-
-          length(unique(stat_data$date))
+          length(unique(stat_data$date_time))
         tmp_stats_table[tmp_stats_table$ID==i,]$sp_div_sa<-
           round(tmp_stats_table[tmp_stats_table$ID==i,]$sp/
                   tmp_stats_table[tmp_stats_table$ID==i,]$sa*100,0)
@@ -234,17 +234,17 @@ sequential_ranks_calc<-function(ID){
   id_count=1
   data_output<-sequential_ranks[0,] # Create empty table with same columns
   while(id_count<=length(ID)){
-    dates<-unique(sequential_ranks[sequential_ranks$ID==ID[id_count],]$date)
+    dates<-unique(sequential_ranks[sequential_ranks$ID==ID[id_count],]$date_time)
     for(i in dates){
-      one_row<-sequential_ranks[sequential_ranks$ID==ID[id_count] & sequential_ranks$date==i,] %>%
-        arrange(date) %>% slice(n())
+      one_row<-sequential_ranks[sequential_ranks$ID==ID[id_count] & sequential_ranks$date_time==i,] %>%
+        arrange(date_time) %>% slice(n())
       data_output<-data_output %>% add_row(one_row)
     }
     id_count<-id_count+1
   }
   return(data_output)
 }
-processInputs<-function(indoor,location,day,date,eventType){
+processInputs<-function(indoor,location,day,date_time,eventType){
   if(indoor=="Indoor"){
     choice_indoor=1
   } else if(indoor=="Outdoor"){
@@ -267,10 +267,10 @@ processInputs<-function(indoor,location,day,date,eventType){
     choice_day=day
   }
   # Read-in Date selection
-  if(date=="All"){
-    choice_date=unique(match_table$date)
+  if(date_time=="All"){
+    choice_date=unique(match_table$date_time)
   } else {
-    choice_date=date
+    choice_date=date_time
   }
   # Read-in Date selection
   if(eventType=="All"){
@@ -308,7 +308,7 @@ fourDRCalc_dragon<-function(){
         # Add ID, rank and date to sequential ranks table:
         sequential_ranks<<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
                                                         rank4dr = rank_table[rank_table$ID==game_table$ID[row_num],2],
-                                                        date=game_table$date[row_num])
+                                                        date_time=game_table$date_time[row_num])
         
       } else if (game_table$score_side[row_num]<game_table$score_opp[row_num]) { # i.e. player lost
         prob<-exp(own_rank+partner_rank)/
@@ -320,7 +320,7 @@ fourDRCalc_dragon<-function(){
         # Add ID, rank and date to sequential ranks table:
         sequential_ranks<<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
                                                         rank4dr = rank_table[rank_table$ID==game_table$ID[row_num],2],
-                                                        date=game_table$date[row_num])
+                                                        date_time=game_table$date_time[row_num])
       } else { print("No-difference in score")} # therefore 4dr rank not updated
     }
   }
@@ -382,7 +382,7 @@ fourDRCalc_zeroSum<-function(){
         ## Add ID, rank and date to sequential ranks table:
         sequential_ranks<<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
                                                         rank4dr = rank_table[rank_table$ID==game_table$ID[row_num],2],
-                                                        date=game_table$date[row_num])
+                                                        date_time=game_table$date_time[row_num])
         
       } else if (game_table$score_side[row_num]<game_table$score_opp[row_num]) { # i.e. player lost
         prob<-exp((own_rank+partner_rank)/scalar_adj)/
@@ -399,7 +399,7 @@ fourDRCalc_zeroSum<-function(){
         # Add ID, rank and date to sequential ranks table:
         sequential_ranks<<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
                                                         rank4dr = rank_table[rank_table$ID==game_table$ID[row_num],2],
-                                                        date=game_table$date[row_num])
+                                                        date_time=game_table$date_time[row_num])
       } else { print("No-difference in score")} # therefore 4dr rank not updated
     }
   }
@@ -524,7 +524,7 @@ createLeaderBoard_4dr<-function(data_instance,row_length){
 ## Data re-formatting and calculation of ratios and 4DR
 #----
 # Add Days of the Week:
-match_table$dow<-as.character(wday(match_table$date, label=TRUE))
+match_table$dow<-as.character(wday(match_table$date_time, label=TRUE))
 # print(summary(match_table$dow)) # DEBUG
 # print(typeof(match_table))
 # print(class(match_table))
@@ -624,7 +624,7 @@ for (i in 1:game_max){
 
 
 # Create table to collect sequential 4DR ranks:
-sequential_ranks<-data.frame(ID=character(),rank4dr=numeric(),date=as.Date(character()),
+sequential_ranks<-data.frame(ID=character(),rank4dr=numeric(),date_time=as.Date(character()),
                              stringsAsFactors=FALSE)
 
 ## Decide on 4DR system ...
@@ -641,12 +641,12 @@ server <- function(input, output) {
     thu_stats<-match_table_long %>% filter(dow %in% "Thu" & event_type %in% "ladder")
     if (nrow(thu_stats) != 0){
       thu_this<-makeStatTable(thu_stats)
-      last_session<-max(thu_stats$date)
-      if (nrow(thu_stats[thu_stats$date != last_session,])==0){
+      last_session<-max(thu_stats$date_time)
+      if (nrow(thu_stats[thu_stats$date_time != last_session,])==0){
         print("No previous dates for Thu leaderboard comparison")
         thu_prev <- 0
       } else {
-        thu_prev<-makeStatTable(thu_stats[thu_stats$date != last_session,])
+        thu_prev<-makeStatTable(thu_stats[thu_stats$date_time != last_session,])
       }
       createLeaderBoard(thu_this,thu_prev,10)
     } else {
@@ -690,7 +690,7 @@ server <- function(input, output) {
     lhs_stats<-match_table_long %>% filter(location %in% "Llanishen HS" & event_type %in% "ladder")
     if (nrow(lhs_stats) != 0){
       lhs_this<-makeStatTable(lhs_stats)
-      last_session<-max(lhs_stats$date)
+      last_session<-max(lhs_stats$date_time)
       # if (nrow(lhs_stats[lhs_stats$date != last_session,])==0){
       #   print("No previous dates for Thu leaderboard comparison")
       #   lhs_prev <- 0
@@ -714,7 +714,7 @@ server <- function(input, output) {
                                           indoor %in% choice_indoor &
                                           dow %in% choice_day &
                                           event_type %in% choice_event_type &
-                                          date %in% ymd(choice_date))
+                                          date_time %in% ymd_hms(choice_date))
                                           #date %in% as.POSIXct(choice_date,tz='UTC')) # Changed this for postgres date format compatibility - not sure what the precise format difference was
     data
   })
@@ -804,7 +804,7 @@ ui <- page_fluid(
   
   # Leaderboards:
   card(card_header("Ladder Leaderboards"),
-       div(p(paste0("(Last updated: ",ymd(max(match_table$date)),")"),style="font-size: 12px;")),
+       div(p(paste0("(Last updated: ",ymd(max(match_table$date_time)),")"),style="font-size: 12px;")),
   layout_columns(
     card(card_header("LLC Thursday"),
          formattableOutput("thu_ladder")),
@@ -839,7 +839,7 @@ ui <- page_fluid(
                        selectInput("date",
                                    "Date:",
                                    c("All",
-                                     unique(as.character(match_table$date)))))
+                                     unique(as.character(match_table$date_time)))))
   ),
   layout_columns(checkboxInput("rotate", "Rotate charts? (ideal for smartphones)", FALSE))
   ),
