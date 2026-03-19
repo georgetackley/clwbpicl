@@ -59,6 +59,7 @@ match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "
 match_table$date_time <- ymd_hm(match_table$date_time)
 # google_rank_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
 init_4dr_table<-dbReadTable(con, "4DR_initialiser")
+print(summary(init_4dr_table)) # DEBUG
 
 # Functions:
 makeStatTable<-function(stat_data){
