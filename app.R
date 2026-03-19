@@ -596,7 +596,7 @@ player_list<-unique(match_table_long$ID)
 rank_table_all<-data.frame(ID=player_list,rank=3)
 # Merge with historical ranks to replace '3.000's where known ('init_4dr_table')
 for(id in 1:nrow(init_4dr_table)){
-  rank_table_all$rank[rank_table_all$ID %in% init_4dr_table$ID[id]] <- init_4dr_table$rank[id]
+  rank_table_all$rank[rank_table_all$ID %in% init_4dr_table$name[id]] <- init_4dr_table$rank[id]
 }
 # Store ranks in rank_table
 rank_table<-rank_table_all
