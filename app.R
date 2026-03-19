@@ -61,7 +61,7 @@ gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
 # match_table_goog<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
 match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
 # match_table<-read.table('~/Desktop/mastersheet_rows.csv',sep=',',header = TRUE)
-match_table$date <- ymd(match_table$date)
+match_table$date_time <- ymd_hm(match_table$date_time)
 google_rank_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
 # print(paste0("google_rank_table_no_rows: '",nrow(google_rank_table)))
 # print("Summary 'match_table (Postgres): '")
@@ -544,9 +544,9 @@ match_table$dow<-as.character(wday(match_table$date, label=TRUE))
 game_max<-max(match_table$game_no)
 # Create empty data.frame to store results in 'long' format (i.e. one row per player per game)
 match_table_long <- data.frame(ID=character(),
-                               date=as.Date(character()),
+                               date_time=as.Date(character()), #update to 'date_time' 19032026
                                dow=character(),
-                               time=character(),
+                               #time=character(), # removed 19032026
                                game=integer(),
                                partner=character(), 
                                opp1=character(), 
@@ -575,22 +575,22 @@ match_table_long <- data.frame(ID=character(),
 for (i in 1:game_max){
   row1<-match_table[match_table$game_no==i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%
     select(ID=p1,partner=p2,opp1=p3,opp2=p4,score_side=p1p2_score,score_opp=p3p4_score,score_method,
-           location,date=date,dow=dow,indoor,no_of_courts,court_rank,event_type)
+           location,date=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
   row1$game<-i
   
   row2<-match_table[match_table$game_no==i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%
     select(ID=p2,partner=p1,opp1=p3,opp2=p4,score_side=p1p2_score,score_opp=p3p4_score,score_method,
-           location,date=date,dow=dow,indoor,no_of_courts,court_rank,event_type)
+           location,date=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
   row2$game<-i
   
   row3<-match_table[match_table$game_no==i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%
     select(ID=p3,partner=p4,opp1=p1,opp2=p2,score_side=p3p4_score,score_opp=p1p2_score,score_method,
-           location,date=date,dow=dow,indoor,no_of_courts,court_rank,event_type)
+           location,date=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
   row3$game<-i
   
   row4<-match_table[match_table$game_no==i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%
     select(ID=p4,partner=p3,opp1=p1,opp2=p2,score_side=p3p4_score,score_opp=p1p2_score,score_method,
-           location,date=date,dow=dow,indoor,no_of_courts,court_rank,event_type)
+           location,date=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
   row4$game<-i
   
   match_table_long<-bind_rows(match_table_long,row1,row2,row3,row4)
