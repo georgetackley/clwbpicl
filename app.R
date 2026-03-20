@@ -386,7 +386,7 @@ fourDRCalc_zeroSum<-function(){
         ## Add ID, rank and date to sequential ranks table:
         sequential_ranks<<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
                                                         rank4dr = rank_table[rank_table$ID==game_table$ID[row_num],2],
-                                                        date_time=game_table$date_time[row_num])
+                                                        date_time=ymd_hm(game_table$date_time[row_num])) # added ymd_hm 20032026
         
       } else if (game_table$score_side[row_num]<game_table$score_opp[row_num]) { # i.e. player lost
         prob<-exp((own_rank+partner_rank)/scalar_adj)/
@@ -403,7 +403,7 @@ fourDRCalc_zeroSum<-function(){
         # Add ID, rank and date to sequential ranks table:
         sequential_ranks<<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
                                                         rank4dr = rank_table[rank_table$ID==game_table$ID[row_num],2],
-                                                        date_time=game_table$date_time[row_num])
+                                                        date_time=ymd_hm(game_table$date_time[row_num])) # added ymd_hm 20032026
       } else { print("No-difference in score")} # therefore 4dr rank not updated
     }
   }
@@ -558,6 +558,7 @@ match_table_long <- data.frame(ID=character(),
                                event_type=character(),
                                stringsAsFactors = FALSE)
 
+
 # Reformat to long format (see above) and store in match_table_long:
 # Might at some point be safer to check this with game id?
 for (i in 1:game_max){
@@ -628,7 +629,7 @@ for (i in 1:game_max){
 
 
 # Create table to collect sequential 4DR ranks:
-sequential_ranks<-data.frame(ID=character(),rank4dr=numeric(),date_time=as.Date(character()),
+sequential_ranks<-data.frame(ID=character(),rank4dr=numeric(),date_time=ymd_hms(),
                              stringsAsFactors=FALSE)
 
 ## Decide on 4DR system ...
