@@ -387,7 +387,7 @@ fourDRCalc_zeroSum<-function(){
         ## Add ID, rank and date to sequential ranks table:
         sequential_ranks<<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
                                                         rank4dr = rank_table[rank_table$ID==game_table$ID[row_num],2],
-                                                        date_time=ymd_hm(game_table$date_time[row_num])) # added ymd_hm 20032026
+                                                        date_time=ymd_hms(game_table$date_time[row_num])) # added ymd_hm 20032026
         
       } else if (game_table$score_side[row_num]<game_table$score_opp[row_num]) { # i.e. player lost
         prob<-exp((own_rank+partner_rank)/scalar_adj)/
@@ -404,7 +404,7 @@ fourDRCalc_zeroSum<-function(){
         # Add ID, rank and date to sequential ranks table:
         sequential_ranks<<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
                                                         rank4dr = rank_table[rank_table$ID==game_table$ID[row_num],2],
-                                                        date_time=ymd_hm(game_table$date_time[row_num])) # added ymd_hm 20032026
+                                                        date_time=ymd_hms(game_table$date_time[row_num])) # added ymd_hm 20032026
       } else { print("No-difference in score")} # therefore 4dr rank not updated
     }
   }
