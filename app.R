@@ -231,7 +231,8 @@ makePlot4drVert<-function(plot_data){
 sequential_ranks_calc<-function(ID){
   id_count=1
   data_output<-sequential_ranks[0,] # Create empty table with same columns
-  print(sequential_ranks)
+  print(sequential_ranks[1:5,])
+  print(summary(sequential_ranks))
   while(id_count<=length(ID)){
     #dates<-unique(sequential_ranks[sequential_ranks$ID==ID[id_count],]$date_time)
     dates<-unique(as_date(sequential_ranks[sequential_ranks$ID==ID[id_count],]$date_time)) # Isolates dates from date-times
@@ -387,7 +388,7 @@ fourDRCalc_zeroSum<-function(){
         ## Add ID, rank and date to sequential ranks table:
         sequential_ranks<<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
                                                         rank4dr = rank_table[rank_table$ID==game_table$ID[row_num],2],
-                                                        date_time=ymd_hms(game_table$date_time[row_num])) # added ymd_hm 20032026
+                                                        date_time=ymd_hms(game_table$date_time[row_num])) # added ymd_hms 20032026
         
       } else if (game_table$score_side[row_num]<game_table$score_opp[row_num]) { # i.e. player lost
         prob<-exp((own_rank+partner_rank)/scalar_adj)/
@@ -404,7 +405,7 @@ fourDRCalc_zeroSum<-function(){
         # Add ID, rank and date to sequential ranks table:
         sequential_ranks<<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
                                                         rank4dr = rank_table[rank_table$ID==game_table$ID[row_num],2],
-                                                        date_time=ymd_hms(game_table$date_time[row_num])) # added ymd_hm 20032026
+                                                        date_time=ymd_hms(game_table$date_time[row_num])) # added ymd_hms 20032026
       } else { print("No-difference in score")} # therefore 4dr rank not updated
     }
   }
