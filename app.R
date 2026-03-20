@@ -231,6 +231,7 @@ makePlot4drVert<-function(plot_data){
 sequential_ranks_calc<-function(ID){
   id_count=1
   data_output<-sequential_ranks[0,] # Create empty table with same columns
+  print(sequential_ranks)
   while(id_count<=length(ID)){
     #dates<-unique(sequential_ranks[sequential_ranks$ID==ID[id_count],]$date_time)
     dates<-unique(as_date(sequential_ranks[sequential_ranks$ID==ID[id_count],]$date_time)) # Isolates dates from date-times
