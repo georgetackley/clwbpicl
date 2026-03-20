@@ -52,14 +52,11 @@ print(dbListTables(con))           # lists tables in the search_path
 # Authenticating connection to Google Sheets using auth file in '.secrets' (uploaded wtih app.R)...
 #gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
 
-## Load data (from Google Sheets + Supabase)
-# match_table_goog<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
+## Load data from database
 match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
-# match_table<-read.table('~/Desktop/mastersheet_rows.csv',sep=',',header = TRUE)
 match_table$date_time <- ymd_hms(match_table$date_time) #Convert to lubridate date/time format
 match_table <- match_table %>% arrange(date_time) #Sort table by date_time
 print(match_table$date_time[1:2]) # DEBUG
-# google_rank_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
 init_4dr_table<-dbReadTable(con, "4DR_initialiser")
 print(summary(init_4dr_table)) # DEBUG
 
@@ -115,9 +112,9 @@ makeStatTable<-function(stat_data){
           round(rank_table[rank_table$ID==i,]$rank,4)
         #NB the following assumes a maximum of ONE 'session' per DATE.
         tmp_stats_table[tmp_stats_table$ID==i,]$sp<-
-          length(unique(stat_data[stat_data$ID==i,]$date_time))
+          length(unique(as_date(stat_data[stat_data$ID==i,]$date_time)))
         tmp_stats_table[tmp_stats_table$ID==i,]$sa<-
-          length(unique(stat_data$date_time))
+          length(unique(as_date(stat_data$date_time)))
         tmp_stats_table[tmp_stats_table$ID==i,]$sp_div_sa<-
           round(tmp_stats_table[tmp_stats_table$ID==i,]$sp/
                   tmp_stats_table[tmp_stats_table$ID==i,]$sa*100,0)
