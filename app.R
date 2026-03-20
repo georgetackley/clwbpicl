@@ -240,7 +240,7 @@ sequential_ranks_calc<-function(ID){
       one_row<-sequential_ranks[sequential_ranks$ID==ID[id_count] &
                                   sequential_ranks$date_time==
                                   max(sequential_ranks$date_time[sequential_ranks$date_time<as_date(i)+dhours(24)])] %>%
-        arrange(as_datetime(date_time)) %>% slice(n())
+        arrange(ymd_hms(date_time)) %>% slice(n())
       data_output<-data_output %>% add_row(one_row)
     }
     id_count<-id_count+1
