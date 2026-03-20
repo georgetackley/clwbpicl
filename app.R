@@ -232,9 +232,12 @@ sequential_ranks_calc<-function(ID){
   id_count=1
   data_output<-sequential_ranks[0,] # Create empty table with same columns
   while(id_count<=length(ID)){
-    dates<-unique(sequential_ranks[sequential_ranks$ID==ID[id_count],]$date_time)
+    #dates<-unique(sequential_ranks[sequential_ranks$ID==ID[id_count],]$date_time)
+    dates<-unique(as_date(sequential_ranks[sequential_ranks$ID==ID[id_count],]$date_time)) # Isolates dates from date-times
     for(i in dates){
-      one_row<-sequential_ranks[sequential_ranks$ID==ID[id_count] & sequential_ranks$date_time==i,] %>%
+      one_row<-sequential_ranks[sequential_ranks$ID==ID[id_count] &
+                                  sequential_ranks$date_time==
+                                  max(sequential_ranks$date_time[sequential_ranks$date_time<i+dhours(24),])] %>%
         arrange(date_time) %>% slice(n())
       data_output<-data_output %>% add_row(one_row)
     }
