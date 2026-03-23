@@ -277,11 +277,9 @@ processInputs<-function(indoor,location,day,date,eventType){
   # Read-in Date selection
   if(date=="All"){
     choice_date<-unique(match_table$date_time)
-    print(paste("All dates: ",choice_date))
   } else {
     choice_date<-match_table$date_time[match_table$date_time>as_date(date) & 
                                          match_table$date_time<as_date(date)+dhours(24)]
-    print(paste("Chosen dates: ",choice_date))
   }
   # Read-in Event selection
   if(eventType=="All"){
