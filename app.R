@@ -54,12 +54,12 @@ print(dbListTables(con))           # lists tables in the search_path
 gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
 
 # Load data (from Google Sheets)
-#match_table<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
-init_4dr_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
+match_table<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
+#init_4dr_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
 
 ## Load data from database
-match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
-#init_4dr_table<-dbReadTable(con, "4DR_initialiser")
+#match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
+init_4dr_table<-dbReadTable(con, "4DR_initialiser")
 
 # Format and sort-by date
 match_table$date_time <- ymd_hms(match_table$date_time) #Convert to lubridate date/time format
@@ -596,8 +596,8 @@ player_list<-unique(match_table_long$ID) # I think this should now be pullede st
 rank_table_all<-data.frame(ID=player_list,rank=3)
 # Merge with historical ranks to replace '3.000's where known ('init_4dr_table')
 for(id in 1:nrow(init_4dr_table)){
-  #rank_table_all$rank[rank_table_all$ID %in% init_4dr_table$name[id]] <- init_4dr_table$rank[id]
-  rank_table_all$rank[rank_table_all$ID %in% init_4dr_table$ID[id]] <- init_4dr_table$rank[id]
+  rank_table_all$rank[rank_table_all$ID %in% init_4dr_table$name[id]] <- init_4dr_table$rank[id]
+  #rank_table_all$rank[rank_table_all$ID %in% init_4dr_table$ID[id]] <- init_4dr_table$rank[id] # For google 4DR name<->ID
 }
 # Store ranks in rank_table
 rank_table<-rank_table_all
