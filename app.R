@@ -63,7 +63,7 @@ init_4dr_table<-dbReadTable(con, "4DR_initialiser")
 
 # Format and sort-by date
 match_table$date_time <- ymd_hms(match_table$date_time) #Convert to lubridate date/time format
-match_table <- match_table %>% arrange(date_time) #Sort table by date_time
+#match_table <- match_table %>% arrange(date_time) #Sort table by date_time
 
 # Functions:
 makeStatTable<-function(stat_data){
