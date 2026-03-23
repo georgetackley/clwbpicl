@@ -585,15 +585,9 @@ for (i in 1:game_max){
   match_table_long<-bind_rows(match_table_long,row1,row2,row3,row4)
 }
 
-print("Dates 'match_table_long: '") # DEBUG
-print(summary(match_table_long$date_time)) # DEBUG
-
-print("Dates 'match_table: '") # DEBUG
-print(summary(match_table$date_time)) # DEBUG
 
 print("4DR table summary") # DEBUG
 print(summary(init_4dr_table)) # DEBUG
-
 
 
 # All players:
