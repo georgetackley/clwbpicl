@@ -49,16 +49,21 @@ print(dbGetQuery(con, "SELECT current_database() AS db, current_user AS user, in
 # 1) List available tables (schema-qualified)
 print(dbListTables(con))           # lists tables in the search_path
 
+## Load from Google
 # Authenticating connection to Google Sheets using auth file in '.secrets' (uploaded wtih app.R)...
-#gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
+gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
+
+# Load data (from Google Sheets)
+match_table<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
+#init_4dr_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
 
 ## Load data from database
-match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
+#match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
+init_4dr_table<-dbReadTable(con, "4DR_initialiser")
+
+# Format and sort-by date
 match_table$date_time <- ymd_hms(match_table$date_time) #Convert to lubridate date/time format
 match_table <- match_table %>% arrange(date_time) #Sort table by date_time
-print(match_table$date_time[1:2]) # DEBUG
-init_4dr_table<-dbReadTable(con, "4DR_initialiser")
-print(summary(init_4dr_table)) # DEBUG
 
 # Functions:
 makeStatTable<-function(stat_data){
@@ -531,13 +536,6 @@ createLeaderBoard_4dr<-function(data_instance,row_length){
 #----
 # Add Days of the Week:
 match_table$dow<-as.character(wday(match_table$date_time, label=TRUE))
-# print(summary(match_table$dow)) # DEBUG
-# print(typeof(match_table))
-# print(class(match_table))
-# print(sapply(match_table, class))
-# print(sapply(match_table, attributes))
-# print(attributes(match_table))
-# print(names(match_table))
 
 # Find number of games(=rows) in match_table:
 game_max<-nrow(match_table)
