@@ -609,6 +609,7 @@ for(id in 1:nrow(init_4dr_table)){
 # Store ranks in rank_table
 rank_table<-rank_table_all
 rank_table$rank<-as.numeric(rank_table$rank)
+print(rank_table)
 
 # maximum (i.e. smallest!) fraction by which points are down-adjusted
 max_adj_factor<-0.8
