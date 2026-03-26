@@ -20,7 +20,7 @@ Sys.setenv(SUPABASE_DB_HOST = "aws-1-eu-west-1.pooler.supabase.com")
 db_host <- get_env("SUPABASE_DB_HOST", "db.bnnisnnqvsghpyktijal.supabase.co")
 db_port <- as.integer(get_env("SUPABASE_DB_PORT", "5432"))
 db_name <- get_env("SUPABASE_DB_NAME", "postgres")
-Sys.setenv(SUPABASE_DB_USER = "postgres")
+Sys.setenv(SUPABASE_DB_USER = "postgres.bnnisnnqvsghpyktijal")
 db_user <- get_env("SUPABASE_DB_USER")
 pw<-read.table(file='~/.secrets/supabase', header = FALSE) # Read password locally
 Sys.setenv(SUPABASE_DB_PASSWORD = as.character(pw[1]))
