@@ -582,7 +582,9 @@ for (i in 1:game_max){
 fourDR_returns<-fourDRCalc_zeroSum() #updated - zero sum version; simultaneous game calcs (not sequential for the 4 players); div by 3
 rank_table<-fourDR_returns$ranks
 sequential_ranks<-fourDR_returns$seqRanks
+print("DEBUG: ranks") # DEBUG
 print(rank_table[1:5,]) # DEBUG
+print("DEBUG: seq.ranks") # DEBUG
 print(sequential_ranks[1:5,]) # DEBUG
 
 
