@@ -45,7 +45,7 @@ connectDB <- function(){
     password = password,
     sslmode = "require"
   )
-  return con
+  return(con)
 }
 
 #Call DB function
