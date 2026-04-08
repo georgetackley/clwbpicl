@@ -246,45 +246,6 @@ processInputs<-function(indoor,location,day,date,eventType){
                        "choice_event_type" = choice_event_type)
   return(input_values) 
 }
-fourDRCalc_dragon<-function(){
-  for (i in 1:game_max){
-    tmp_rank_table<-rank_table # after each game, save current ranks in tmp table
-    for (row_num in 1:4){
-      # Create temp table for sinlge game, i
-      game_table<-match_table_long[match_table_long$game==i,]
-      # For row 1 (=player 1) game i, store player ranks in variables:
-      own_rank<-tmp_rank_table[tmp_rank_table$ID==game_table$ID[row_num],2]
-      partner_rank<-tmp_rank_table[tmp_rank_table$ID==game_table$partner[row_num],2]
-      opponent_1_rank<-tmp_rank_table[tmp_rank_table$ID==game_table$opp1[row_num],2]
-      opponent_2_rank<-tmp_rank_table[tmp_rank_table$ID==game_table$opp2[row_num],2]
-      
-      if (game_table$score_side[row_num]>game_table$score_opp[row_num]) { # i.e. player won
-        prob<-exp(opponent_1_rank+opponent_2_rank)/
-          (exp(own_rank+partner_rank)+exp(opponent_1_rank+opponent_2_rank))
-        points_diff<-game_table$score_side[row_num] - game_table$score_opp[row_num] #points diff for winner
-        points_awarded<-(0.1*prob)+(0.001*points_diff)
-        rank_table[rank_table$ID==game_table$ID[row_num],2]<<-
-          tmp_rank_table[tmp_rank_table$ID==game_table$ID[row_num],2] + points_awarded
-        # Add ID, rank and date to sequential ranks table:
-        sequential_ranks<<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
-                                                        rank4dr = rank_table[rank_table$ID==game_table$ID[row_num],2],
-                                                        date_time=game_table$date_time[row_num])
-        
-      } else if (game_table$score_side[row_num]<game_table$score_opp[row_num]) { # i.e. player lost
-        prob<-exp(own_rank+partner_rank)/
-          (exp(own_rank+partner_rank)+exp(opponent_1_rank+opponent_2_rank))
-        points_diff<-game_table$score_side[row_num] #points diff for loser
-        points_awarded<-(-0.1*prob)+(0.001*points_diff)
-        rank_table[rank_table$ID==game_table$ID[row_num],2]<<-
-          tmp_rank_table[tmp_rank_table$ID==game_table$ID[row_num],2] + points_awarded
-        # Add ID, rank and date to sequential ranks table:
-        sequential_ranks<<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
-                                                        rank4dr = rank_table[rank_table$ID==game_table$ID[row_num],2],
-                                                        date_time=game_table$date_time[row_num])
-      } else { print("No-difference in score")} # therefore 4dr rank not updated
-    }
-  }
-}
 fourDRCalc_zeroSum<-function(){
   for (i in 1:game_max){
     # Create copy of rank table for function:
@@ -292,6 +253,10 @@ fourDRCalc_zeroSum<-function(){
     
     # Create table for single game, i
     game_table<-match_table_long[match_table_long$game==i,]
+    
+    # Create table to collect sequential 4DR ranks:
+    sequential_ranks<-data.frame(ID=character(),rank4dr=numeric(),date_time=ymd_hms(),
+                                 stringsAsFactors=FALSE)
     
     # Store four players' starting ranks:
     player_one_rank<-fx_rank_table[fx_rank_table$ID==game_table$ID[1],2]
@@ -339,7 +304,7 @@ fourDRCalc_zeroSum<-function(){
         fx_rank_table[fx_rank_table$ID==game_table$ID[row_num],2]<-new_rank
         
         ## Add ID, rank and date to sequential ranks table:
-        sequential_ranks<<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
+        sequential_ranks<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
                                                         rank4dr = fx_rank_table[fx_rank_table$ID==game_table$ID[row_num],2],
                                                         date_time=ymd_hms(game_table$date_time[row_num])) # added ymd_hms 20032026
         
@@ -355,14 +320,14 @@ fourDRCalc_zeroSum<-function(){
         fx_rank_table[fx_rank_table$ID==game_table$ID[row_num],2]<-new_rank
 
         # Add ID, rank and date to sequential ranks table:
-        sequential_ranks<<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
+        sequential_ranks<-sequential_ranks %>% add_row(ID = game_table$ID[row_num],
                                                         rank4dr = fx_rank_table[fx_rank_table$ID==game_table$ID[row_num],2],
                                                         date_time=ymd_hms(game_table$date_time[row_num])) # added ymd_hms 20032026
       } else { print("No-difference in score")} # therefore 4dr rank not updated
     }
   }
   returns <- list(ranks=fx_rank_table,seqRanks=sequential_ranks)
-  return(fx_rank_table)
+  return(returns)
 }
 createLeaderBoard<-function(data_instance,data_instance_pen,row_length){
   #Select current rows that match >=50% attendance criteria and create ranks
@@ -612,14 +577,15 @@ for (i in 1:game_max){
   }
 }
 
-# Create table to collect sequential 4DR ranks:
-sequential_ranks<-data.frame(ID=character(),rank4dr=numeric(),date_time=ymd_hms(),
-                             stringsAsFactors=FALSE)
 
 ## Run 4DR calculation
-rank_table<-fourDRCalc_zeroSum() #updated - zero sum version; simultaneous game calcs (not sequential for the 4 players); div by 3
+fourDR_returns<-fourDRCalc_zeroSum() #updated - zero sum version; simultaneous game calcs (not sequential for the 4 players); div by 3
+rank_table<-fourDR_returns$ranks
+sequential_ranks<-fourDR_returns$seqRanks
 print(rank_table[1:5,]) # DEBUG
-#----
+print(sequential_ranks[1:5,]) # DEBUG
+
+
 
 ## app.R ##
 server <- function(input, output) {
