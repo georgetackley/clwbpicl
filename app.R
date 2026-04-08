@@ -668,15 +668,13 @@ sequential_ranks<-fourDR_returns$seqRanks
 #sequential_ranks
 
 # UPSERT ranks:
-cols <- names(rank_table) # columns to insert
+rank_table$name<-rank_table$ID # Map ID to name for upsert
+cols <- c("name","rank") # columns to upsert
 col_list <- paste(sprintf('"%s"', cols), collapse = ", ")
 val_list <- paste(rep("?", length(cols)), collapse = ", ")
 
 # Conflict Key column(s) (must have a UNIQUE/PK constraint)
-rank_table$name<-rank_table$ID # Map ID to name for upsert
-rank_table$rank<-rank_table$ranks # Map ranks to rank for upsert
 conflict_cols <- c("name") # e.g. c("date_time","location","court_rank","p1","p2",...)
-
 conflict_target <- paste(sprintf('"%s"', conflict_cols), collapse = ", ")
 
 # Update all columns except the conflict key columns
