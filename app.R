@@ -666,7 +666,7 @@ sequential_ranks<-fourDR_returns$seqRanks
 print("DEBUG: ranks") # DEBUG
 print(rank_table[1:5,]) # DEBUG
 print("DEBUG: seq.ranks") # DEBUG
-print(sequential_ranks[1:5,]) # DEBUG
+print(sequential_ranks[1:15,]) # DEBUG
 
 
 
