@@ -692,7 +692,7 @@ sql <- sprintf(
 
 # Execute (parameterized)
 for (i in seq_len(nrow(rank_table))) {
-  DBI::dbExecute(con, sql, params = as.list(rank_table[i, , drop = TRUE]))
+  DBI::dbExecute(con, sql, params = list(rank_table$name[i], rank_table$rank[i]))
 }
 
 
