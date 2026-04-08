@@ -575,8 +575,8 @@ match_table_long <- dbReadTable(con, "match_table_long")
 
 ## Re-cast some columns (this can be tidied in the future)
 rank_table$ID<-rank_table$name
-seqential_ranks$ID<-sequential_ranks$name
-seqential_ranks$rank4dr<-sequential_ranks$rank
+sequential_ranks$ID<-sequential_ranks$name
+sequential_ranks$rank4dr<-sequential_ranks$rank
 
 
 # # Format data and sort-by date
