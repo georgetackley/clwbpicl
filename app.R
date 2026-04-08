@@ -580,22 +580,20 @@ for (i in 1:game_max){
   match_table_long<-bind_rows(match_table_long,row1,row2,row3,row4)
 }
 
-# All players:
+# Store list of all players in match_table:
 player_list<-unique(match_table_long$ID) # I think this should now be pullede straight from member list??
 
 ## Rank tables
 # Create table of ranks with all players as 3.000:
-rank_table_all<-data.frame(ID=player_list,rank=3)
+rank_table<-data.frame(ID=player_list,rank=3)
+
 # Merge with historical ranks to replace '3.000's where known ('init_4dr_table')
 for(id in 1:nrow(init_4dr_table)){
-  rank_table_all$rank[rank_table_all$ID %in% init_4dr_table$name[id]] <- init_4dr_table$rank[id]
-  #rank_table_all$rank[rank_table_all$ID %in% init_4dr_table$ID[id]] <- init_4dr_table$rank[id] # For google 4DR name<->ID
+  rank_table$rank[rank_table$ID %in% init_4dr_table$name[id]] <- init_4dr_table$rank[id]
 }
-# Store ranks in rank_table
-rank_table<-rank_table_all
+
+# Ensure ranks are numeric
 rank_table$rank<-as.numeric(rank_table$rank)
-print("Rank table summary")
-print(rank_table)
 
 # maximum (i.e. smallest!) fraction by which points are down-adjusted
 max_adj_factor<-0.8
