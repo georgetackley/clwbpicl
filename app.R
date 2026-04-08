@@ -328,16 +328,15 @@ fourDRCalc_zeroSum_ORIGINAL<-function(){
 fourDRCalc_zeroSum<-function(){
   # Create copy of rank table for function:
   fx_rank_table<-rank_table
+  # Create table to collect sequential 4DR ranks:
+  sequential_ranks<-data.frame(ID=character(),rank4dr=numeric(),date_time=ymd_hms(),
+                               stringsAsFactors=FALSE)
   for (i in 1:game_max){
     # Create tmp copy of rank table for function:
     tmp_rank_table<-fx_rank_table
     
     # Create table for single game, i
     game_table<-match_table_long[match_table_long$game==i,]
-    
-    # Create table to collect sequential 4DR ranks:
-    sequential_ranks<-data.frame(ID=character(),rank4dr=numeric(),date_time=ymd_hms(),
-                                 stringsAsFactors=FALSE)
     
     # Store four players' starting ranks:
     player_one_rank<-tmp_rank_table[tmp_rank_table$ID==game_table$ID[1],2]
