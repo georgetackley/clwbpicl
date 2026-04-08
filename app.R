@@ -569,132 +569,104 @@ print(dbListTables(con))           # lists tables in the search_path
 ## Load data from database
 match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
 init_4dr_table<-dbReadTable(con, "4DR_initialiser")
-
-# Format data and sort-by date
-match_table$date_time <- ymd_hms(match_table$date_time) #Convert to lubridate date/time format
-match_table <- match_table %>% arrange(date_time) #Sort table by date_time
-
-# Add Days of the Week:
-match_table$dow<-as.character(wday(match_table$date_time, label=TRUE))
-
-# Find number of games(=rows) in match_table:
-game_max<-nrow(match_table)
-
-# Create empty data.frame to store results in 'long' format (i.e. one row per player per game)
-match_table_long <- data.frame(ID=character(),
-                               date_time=as.Date(character()), #update to 'date_time' 19032026
-                               dow=character(),
-                               game=integer(),
-                               partner=character(), 
-                               opp1=character(), 
-                               opp2=character(),
-                               score_side=integer(),
-                               score_opp=integer(),
-                               score_method=character(),
-                               location=character(),
-                               indoor=integer(),
-                               no_of_courts=integer(),
-                               court_rank=integer(),
-                               event_type=character(),
-                               stringsAsFactors = FALSE)
+rank_table<-dbReadTable(con, "4DR_current")
+sequential_ranks<-dbReadTable(con, "sequential_ranks")
+match_table_long <- dbReadTable(con, "match_table_long")
 
 
-# Reformat to long format (see above) and store in match_table_long:
-for (i in 1:game_max){
-  row1<-match_table[i,] %>%
-    select(ID=p1,partner=p2,opp1=p3,opp2=p4,score_side=p1p2_score,score_opp=p3p4_score,score_method,
-           location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
-  row1$game<-i
-  
-  row2<-match_table[i,] %>%
-    select(ID=p2,partner=p1,opp1=p3,opp2=p4,score_side=p1p2_score,score_opp=p3p4_score,score_method,
-           location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
-  row2$game<-i
-  
-  row3<-match_table[i,] %>%
-    select(ID=p3,partner=p4,opp1=p1,opp2=p2,score_side=p3p4_score,score_opp=p1p2_score,score_method,
-           location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
-  row3$game<-i
-  
-  row4<-match_table[i,] %>%
-    select(ID=p4,partner=p3,opp1=p1,opp2=p2,score_side=p3p4_score,score_opp=p1p2_score,score_method,
-           location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
-  row4$game<-i
-  
-  match_table_long<-bind_rows(match_table_long,row1,row2,row3,row4)
-}
+# # Format data and sort-by date
+# match_table$date_time <- ymd_hms(match_table$date_time) #Convert to lubridate date/time format
+# match_table <- match_table %>% arrange(date_time) #Sort table by date_time
+# 
+# # Add Days of the Week:
+# match_table$dow<-as.character(wday(match_table$date_time, label=TRUE))
+# 
+# # Find number of games(=rows) in match_table:
+# game_max<-nrow(match_table)
+# 
+# # Create empty data.frame to store results in 'long' format (i.e. one row per player per game)
+# match_table_long <- data.frame(ID=character(),
+#                                date_time=as.Date(character()), #update to 'date_time' 19032026
+#                                dow=character(),
+#                                game=integer(),
+#                                partner=character(), 
+#                                opp1=character(), 
+#                                opp2=character(),
+#                                score_side=integer(),
+#                                score_opp=integer(),
+#                                score_method=character(),
+#                                location=character(),
+#                                indoor=integer(),
+#                                no_of_courts=integer(),
+#                                court_rank=integer(),
+#                                event_type=character(),
+#                                stringsAsFactors = FALSE)
+# 
+# 
+# # Reformat to long format (see above) and store in match_table_long:
+# for (i in 1:game_max){
+#   row1<-match_table[i,] %>%
+#     select(ID=p1,partner=p2,opp1=p3,opp2=p4,score_side=p1p2_score,score_opp=p3p4_score,score_method,
+#            location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
+#   row1$game<-i
+#   
+#   row2<-match_table[i,] %>%
+#     select(ID=p2,partner=p1,opp1=p3,opp2=p4,score_side=p1p2_score,score_opp=p3p4_score,score_method,
+#            location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
+#   row2$game<-i
+#   
+#   row3<-match_table[i,] %>%
+#     select(ID=p3,partner=p4,opp1=p1,opp2=p2,score_side=p3p4_score,score_opp=p1p2_score,score_method,
+#            location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
+#   row3$game<-i
+#   
+#   row4<-match_table[i,] %>%
+#     select(ID=p4,partner=p3,opp1=p1,opp2=p2,score_side=p3p4_score,score_opp=p1p2_score,score_method,
+#            location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
+#   row4$game<-i
+#   
+#   match_table_long<-bind_rows(match_table_long,row1,row2,row3,row4)
+# }
+# 
+# # Store list of all players in match_table:
+# player_list<-unique(match_table_long$ID) # I think this should now be pullede straight from member list??
+# 
+# ## Rank tables
+# # Create table of ranks with all players as 3.000:
+# rank_table<-data.frame(ID=player_list,rank=3)
+# 
+# # Merge with historical ranks to replace '3.000's where known ('init_4dr_table')
+# for(id in 1:nrow(init_4dr_table)){
+#   rank_table$rank[rank_table$ID %in% init_4dr_table$name[id]] <- init_4dr_table$rank[id]
+# }
+# 
+# # Ensure ranks are numeric
+# rank_table$rank<-as.numeric(rank_table$rank)
+# 
+# ## Add 'adjusted score' column to 'match_table_long' for traditional ladders:
+# # maximum (i.e. smallest!) fraction by which points are down-adjusted
+# max_adj_factor<-0.8
+# match_table_long$score_side_adj<-NA
+# # calculate adjusted scores from court 'levels' (0=courts not assigned levels)
+# for (i in 1:game_max){
+#   if (match_table_long[match_table_long$game==i,]$court_rank[1] == 0){
+#     match_table_long[match_table_long$game==i,]$score_side_adj<-
+#       match_table_long[match_table_long$game==i,]$score_side
+#   } else {
+#     match_table_long[match_table_long$game==i,]$score_side_adj<-
+#       match_table_long[match_table_long$game==i,]$score_side *
+#       (1-((match_table_long[match_table_long$game==i,]$court_rank-1)*
+#             ((1-max_adj_factor)/(match_table_long[match_table_long$game==i,]$no_of_courts-1))))
+#   }
+# }
+# 
+# 
+# ## Run 4DR calculation
+# fourDR_returns<-fourDRCalc_zeroSum() #updated - zero sum version; simultaneous game calcs (not sequential for the 4 players); div by 3
+# rank_table<-fourDR_returns$ranks
+# sequential_ranks<-fourDR_returns$seqRanks
 
-# Store list of all players in match_table:
-player_list<-unique(match_table_long$ID) # I think this should now be pullede straight from member list??
 
-## Rank tables
-# Create table of ranks with all players as 3.000:
-rank_table<-data.frame(ID=player_list,rank=3)
-
-# Merge with historical ranks to replace '3.000's where known ('init_4dr_table')
-for(id in 1:nrow(init_4dr_table)){
-  rank_table$rank[rank_table$ID %in% init_4dr_table$name[id]] <- init_4dr_table$rank[id]
-}
-
-# Ensure ranks are numeric
-rank_table$rank<-as.numeric(rank_table$rank)
-
-## Add 'adjusted score' column to 'match_table_long' for traditional ladders:
-# maximum (i.e. smallest!) fraction by which points are down-adjusted
-max_adj_factor<-0.8
-match_table_long$score_side_adj<-NA
-# calculate adjusted scores from court 'levels' (0=courts not assigned levels)
-for (i in 1:game_max){
-  if (match_table_long[match_table_long$game==i,]$court_rank[1] == 0){
-    match_table_long[match_table_long$game==i,]$score_side_adj<-
-      match_table_long[match_table_long$game==i,]$score_side
-  } else {
-    match_table_long[match_table_long$game==i,]$score_side_adj<-
-      match_table_long[match_table_long$game==i,]$score_side *
-      (1-((match_table_long[match_table_long$game==i,]$court_rank-1)*
-            ((1-max_adj_factor)/(match_table_long[match_table_long$game==i,]$no_of_courts-1))))
-  }
-}
-
-
-## Run 4DR calculation
-fourDR_returns<-fourDRCalc_zeroSum() #updated - zero sum version; simultaneous game calcs (not sequential for the 4 players); div by 3
-rank_table<-fourDR_returns$ranks
-sequential_ranks<-fourDR_returns$seqRanks
-
-## Return tables to database:
-#match_table_long
-#rank_table
-#sequential_ranks
-
-# UPSERT ranks:
-rank_table$name<-rank_table$ID # Map ID to name for upsert
-cols <- c("name","rank") # columns to upsert
-col_list <- paste(sprintf('"%s"', cols), collapse = ", ")
-val_list <- paste(sprintf("$%d", seq_along(cols)), collapse = ", ")
-#val_list <- paste(rep("?", length(cols)), collapse = ", ")
-
-# Conflict Key column(s) (must have a UNIQUE/PK constraint)
-conflict_cols <- c("name") # e.g. c("date_time","location","court_rank","p1","p2",...)
-conflict_target <- paste(sprintf('"%s"', conflict_cols), collapse = ", ")
-
-# Update all columns except the conflict key columns
-update_cols <- setdiff(cols, conflict_cols)
-set_clause <- paste(
-  sprintf('"%s" = EXCLUDED."%s"', update_cols, update_cols),
-  collapse = ", "
-)
-
-sql <- sprintf(
-  'INSERT INTO public."4DR_current" (%s) VALUES (%s)
-   ON CONFLICT (%s) DO UPDATE SET %s;',
-  col_list, val_list, conflict_target, set_clause
-)
-
-# Execute (parameterized)
-for (i in seq_len(nrow(rank_table))) {
-  DBI::dbExecute(con, sql, params = list(rank_table$name[i], rank_table$rank[i]))
-}
 
 
 ## app.R ##
