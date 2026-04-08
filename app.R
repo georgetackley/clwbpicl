@@ -294,10 +294,10 @@ fourDRCalc_zeroSum<-function(){
     game_table<-match_table_long[match_table_long$game==i,]
     
     # Store four players' starting ranks:
-    player_one_rank<-tmp_rank_table[tmp_rank_table$ID==game_table$ID[1],2]
-    player_two_rank<-tmp_rank_table[tmp_rank_table$ID==game_table$ID[2],2]
-    player_three_rank<-tmp_rank_table[tmp_rank_table$ID==game_table$ID[3],2]
-    player_four_rank<-tmp_rank_table[tmp_rank_table$ID==game_table$ID[4],2]
+    player_one_rank<-fx_rank_table[fx_rank_table$ID==game_table$ID[1],2]
+    player_two_rank<-fx_rank_table[fx_rank_table$ID==game_table$ID[2],2]
+    player_three_rank<-fx_rank_table[fx_rank_table$ID==game_table$ID[3],2]
+    player_four_rank<-fx_rank_table[fx_rank_table$ID==game_table$ID[4],2]
     
     for (row_num in 1:4){
       ## Assign pre-game ranks to players for each row (player):
@@ -361,6 +361,7 @@ fourDRCalc_zeroSum<-function(){
       } else { print("No-difference in score")} # therefore 4dr rank not updated
     }
   }
+  returns <- list(ranks=fx_rank_table,seqRanks=sequential_ranks)
   return(fx_rank_table)
 }
 createLeaderBoard<-function(data_instance,data_instance_pen,row_length){
