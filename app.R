@@ -662,11 +662,11 @@ for (i in 1:game_max){
 fourDR_returns<-fourDRCalc_zeroSum() #updated - zero sum version; simultaneous game calcs (not sequential for the 4 players); div by 3
 rank_table<-fourDR_returns$ranks
 sequential_ranks<-fourDR_returns$seqRanks
-print("DEBUG: ranks") # DEBUG
-print(rank_table[1:5,]) # DEBUG
-print("DEBUG: seq.ranks") # DEBUG
-print(sequential_ranks[1:15,]) # DEBUG
 
+# Return tables to database:
+#match_table_long
+#rank_table
+#sequential_ranks
 
 
 ## app.R ##
@@ -688,51 +688,11 @@ server <- function(input, output) {
       formattable(as.data.frame("No Data"))
     }
   })
-  # output$fri_ladder <- renderFormattable({
-  #   fri_stats<-match_table_long %>% filter(dow %in% "Fri" & event_type %in% "ladder")
-  #   if (nrow(fri_stats) != 0){
-  #     fri_this<-makeStatTable(fri_stats)
-  #     last_session<-max(fri_stats$date)
-  #     if (nrow(fri_stats[fri_stats$date != last_session,])==0){
-  #       print("No previous dates for Thu leaderboard comparison")
-  #       fri_prev <- 0
-  #     } else {
-  #       fri_prev<-makeStatTable(fri_stats[fri_stats$date != last_session,])
-  #     }
-  #     #createLeaderBoard(fri_this,fri_prev,10)
-  #     createLeaderBoard_4dr(fri_this,fri_prev,10)
-  #   } else {
-  #     formattable(as.data.frame("No Data"))
-  #   }
-  # })
-  # output$sun_ladder <- renderFormattable({
-  #   sun_stats<-match_table_long %>% filter(dow %in% "Sun"& event_type %in% "ladder")
-  #   if (nrow(sun_stats) != 0){
-  #     sun_this<-makeStatTable(sun_stats)
-  #     last_session<-max(sun_stats$date)
-  #     if (nrow(sun_stats[sun_stats$date != last_session,])==0){
-  #       print("No previous dates for Thu leaderboard comparison")
-  #       sun_prev <- 0
-  #     } else {
-  #       sun_prev<-makeStatTable(sun_stats[sun_stats$date != last_session,])
-  #     }
-  #     createLeaderBoard(sun_this,sun_prev,10)
-  #   } else {
-  #     formattable(as.data.frame("No Data"))
-  #   }
-  # })
+  
   output$lhs_ladder <- renderFormattable({
     lhs_stats<-match_table_long %>% filter(location %in% "Llanishen HS" & event_type %in% "ladder")
     if (nrow(lhs_stats) != 0){
       lhs_this<-makeStatTable(lhs_stats)
-      # last_session<-max(lhs_stats$date_time)
-      # if (nrow(lhs_stats[lhs_stats$date != last_session,])==0){
-      #   print("No previous dates for Thu leaderboard comparison")
-      #   lhs_prev <- 0
-      # } else {
-      #   lhs_prev<-makeStatTable(lhs_stats[lhs_stats$date != last_session,])
-      # }
-      
       createLeaderBoard_4dr(lhs_this,10)
     } else {
       formattable(as.data.frame("No Data"))
@@ -764,10 +724,6 @@ server <- function(input, output) {
   
   output$plot_ratios <- renderPlot( 
     {
-      # Read-in Indoor/Outdoor selection
-      #input_vals<-processInputs(input$indoor,input$location,input$day,input$date) # Function returns processed inputs as a list
-      #list2env(input_vals,envir = .GlobalEnv) # Assigns all list components to global environment
-
       # Filter data (with 'filtered_rows') and generate stats table with custom makeStatTable function
       data_instance<-makeStatTable(filtered_rows())
       
@@ -780,10 +736,6 @@ server <- function(input, output) {
   ) 
   output$plot_ratios_tall <- renderPlot( 
     {
-      # Read-in Indoor/Outdoor selection
-      #input_vals<-processInputs(input$indoor,input$location,input$day,input$date) # Function returns processed inputs as a list
-      #list2env(input_vals,envir = .GlobalEnv) # Assigns all list components to global environment
-      
       # Filter data (with 'filtered_rows') and generate stats table with custom makeStatTable function
       data_instance<-makeStatTable(filtered_rows())
       
@@ -810,10 +762,6 @@ server <- function(input, output) {
   )
   output$plot_4dr_byParticipant <- renderPlot(
     {
-      # Read-in Indoor/Outdoor selection
-      #input_vals<-processInputs(input$indoor,input$location,input$day,input$date) # Function returns processed inputs as a list
-      #list2env(input_vals,envir = .GlobalEnv) # Assigns all list components to global environment
-      
       # Filter data (with 'filtered_rows') and generate stats table with custom makeStatTable function
       data_instance<-makeStatTable(filtered_rows()) # NB this will exclude non-ladder players (i.e. if someone only played in a tournament) but this is critical because it has to duplicate the content of the table created above, so that the row numbers accord.
       
@@ -843,10 +791,6 @@ ui <- page_fluid(
   layout_columns(
     card(card_header("LLC Thursday"),
          formattableOutput("thu_ladder")),
-    # card(card_header("Friday"),
-    #      formattableOutput("fri_ladder")),
-    # card(card_header("Sunday"),
-    #      formattableOutput("sun_ladder"))
     card(card_header("LHS Weekend"),
                formattableOutput("lhs_ladder"))
   )),
