@@ -530,7 +530,7 @@ connectDB <- function(){
   
   # Set Supabase connection env. parameters:
   Sys.setenv(SUPABASE_DB_HOST = "aws-1-eu-west-1.pooler.supabase.com")
-  Sys.setenv(SUPABASE_DB_PORT = "5432")
+  Sys.setenv(SUPABASE_DB_PORT = "6543")
   Sys.setenv(SUPABASE_DB_NAME = "postgres")
   Sys.setenv(SUPABASE_DB_USER = "postgres.bnnisnnqvsghpyktijal")
   
