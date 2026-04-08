@@ -16,33 +16,40 @@ library(DBI)
 library(RPostgres)
 
 
-# Set Supabase connection env. parameters:
-Sys.setenv(SUPABASE_DB_HOST = "aws-1-eu-west-1.pooler.supabase.com")
-Sys.setenv(SUPABASE_DB_PORT = "5432")
-Sys.setenv(SUPABASE_DB_NAME = "postgres")
-Sys.setenv(SUPABASE_DB_USER = "postgres.bnnisnnqvsghpyktijal")
+# DB connection function:
+connectDB <- function(){
+  
+  # Set Supabase connection env. parameters:
+  Sys.setenv(SUPABASE_DB_HOST = "aws-1-eu-west-1.pooler.supabase.com")
+  Sys.setenv(SUPABASE_DB_PORT = "5432")
+  Sys.setenv(SUPABASE_DB_NAME = "postgres")
+  Sys.setenv(SUPABASE_DB_USER = "postgres.bnnisnnqvsghpyktijal")
+  
+  Sys.setenv(SUPABASE_DB_PASS = Sys.getenv("SUPABASE_PW"))   # Password stored on Connect Cloud: Admin/Settings > Variables
+  
+  # Store environment parameters in variables:
+  host <- Sys.getenv("SUPABASE_DB_HOST", "db.bnnisnnqvsghpyktijal.supabase.co") # Not sure if second argument is needed? Same for next few lines
+  port <- as.integer(Sys.getenv("SUPABASE_DB_PORT", "5432"))
+  dbname <- Sys.getenv("SUPABASE_DB_NAME", "postgres")
+  user <- Sys.getenv("SUPABASE_DB_USER", "postgres")
+  password <- Sys.getenv("SUPABASE_DB_PASS")
+  if (!nzchar(password)) stop("Set SUPABASE_DB_PASS environment variable")
+  
+  # Establish DB connection:
+  con <- dbConnect(
+    RPostgres::Postgres(),
+    host = host,
+    port = port,
+    dbname = dbname,
+    user = user,
+    password = password,
+    sslmode = "require"
+  )
+  return con
+}
 
-Sys.setenv(SUPABASE_DB_PASS = Sys.getenv("SUPABASE_PW"))   # Password stored on Connect Cloud: Admin/Settings > Variables
-
-# Store environment parameters in variables:
-host <- Sys.getenv("SUPABASE_DB_HOST", "db.bnnisnnqvsghpyktijal.supabase.co") # Not sure if second argument is needed? Same for next few lines
-port <- as.integer(Sys.getenv("SUPABASE_DB_PORT", "5432"))
-dbname <- Sys.getenv("SUPABASE_DB_NAME", "postgres")
-user <- Sys.getenv("SUPABASE_DB_USER", "postgres")
-password <- Sys.getenv("SUPABASE_DB_PASS")
-if (!nzchar(password)) stop("Set SUPABASE_DB_PASS environment variable")
-
-# Establish DB connection:
-con <- dbConnect(
-  RPostgres::Postgres(),
-  host = host,
-  port = port,
-  dbname = dbname,
-  user = user,
-  password = password,
-  sslmode = "require"
-)
-
+#Call DB function
+con<-connectDB()
 
 # Quick test
 print(dbGetQuery(con, "SELECT current_database() AS db, current_user AS user, inet_server_addr() AS server_ip;"))
