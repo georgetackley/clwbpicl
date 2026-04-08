@@ -16,6 +16,55 @@ library(DBI)
 library(RPostgres)
 
 
+# Set Supabase connection env. parameters:
+Sys.setenv(SUPABASE_DB_HOST = "aws-1-eu-west-1.pooler.supabase.com")
+Sys.setenv(SUPABASE_DB_PORT = "5432")
+Sys.setenv(SUPABASE_DB_NAME = "postgres")
+Sys.setenv(SUPABASE_DB_USER = "postgres.bnnisnnqvsghpyktijal")
+
+Sys.setenv(SUPABASE_DB_PASS = Sys.getenv("SUPABASE_PW"))   # Password stored on Connect Cloud: Admin/Settings > Variables
+
+# Store environment parameters in variables:
+host <- Sys.getenv("SUPABASE_DB_HOST", "db.bnnisnnqvsghpyktijal.supabase.co") # Not sure if second argument is needed? Same for next few lines
+port <- as.integer(Sys.getenv("SUPABASE_DB_PORT", "5432"))
+dbname <- Sys.getenv("SUPABASE_DB_NAME", "postgres")
+user <- Sys.getenv("SUPABASE_DB_USER", "postgres")
+password <- Sys.getenv("SUPABASE_DB_PASS")
+if (!nzchar(password)) stop("Set SUPABASE_DB_PASS environment variable")
+
+# Establish DB connection:
+con <- dbConnect(
+  RPostgres::Postgres(),
+  host = host,
+  port = port,
+  dbname = dbname,
+  user = user,
+  password = password,
+  sslmode = "require"
+)
+
+
+# Quick test
+print(dbGetQuery(con, "SELECT current_database() AS db, current_user AS user, inet_server_addr() AS server_ip;"))
+# 1) List available tables (schema-qualified)
+print(dbListTables(con))           # lists tables in the search_path
+
+## Load from Google
+# Authenticating connection to Google Sheets using auth file in '.secrets' (uploaded wtih app.R)...
+# gs4_auth(email = "tackley@gmail.com", cache = ".secrets")
+
+# Load data (from Google Sheets)
+#match_table<- read_sheet("https://docs.google.com/spreadsheets/d/1Rv-7w5ddibSRMVnzR_DzI522nsj-nYV9euayV_oiIfM/edit?usp=sharing")
+#init_4dr_table<-read_sheet("https://docs.google.com/spreadsheets/d/1IyZ6sbEGs1md9_MZKTMDuuHnOlWu0HXQJXAeleUJ2z4/edit?usp=sharing")
+
+## Load data from database
+match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
+init_4dr_table<-dbReadTable(con, "4DR_initialiser")
+
+# Format and sort-by date
+match_table$date_time <- ymd_hms(match_table$date_time) #Convert to lubridate date/time format
+match_table <- match_table %>% arrange(date_time) #Sort table by date_time
+
 # Functions:
 makeStatTable<-function(stat_data){
   if(nrow(stat_data)==0){
@@ -480,61 +529,14 @@ createLeaderBoard_4dr<-function(data_instance,row_length){
                    #`change` = improvement_formatter),
                  table.attr = 'style="font-size: 11px;";\"')
 }
-# DB connection function:
-connectDB <- function(){
-  
-  # Set Supabase connection env. parameters:
-  Sys.setenv(SUPABASE_DB_HOST = "aws-1-eu-west-1.pooler.supabase.com")
-  Sys.setenv(SUPABASE_DB_PORT = "5432")
-  Sys.setenv(SUPABASE_DB_NAME = "postgres")
-  Sys.setenv(SUPABASE_DB_USER = "postgres.bnnisnnqvsghpyktijal")
-  
-  Sys.setenv(SUPABASE_DB_PASS = Sys.getenv("SUPABASE_PW"))   # Password stored on Connect Cloud: Admin/Settings > Variables
-  
-  # Store environment parameters in variables:
-  host <- Sys.getenv("SUPABASE_DB_HOST", "db.bnnisnnqvsghpyktijal.supabase.co") # Not sure if second argument is needed? Same for next few lines
-  port <- as.integer(Sys.getenv("SUPABASE_DB_PORT", "5432"))
-  dbname <- Sys.getenv("SUPABASE_DB_NAME", "postgres")
-  user <- Sys.getenv("SUPABASE_DB_USER", "postgres")
-  password <- Sys.getenv("SUPABASE_DB_PASS")
-  if (!nzchar(password)) stop("Set SUPABASE_DB_PASS environment variable")
-  
-  # Establish DB connection:
-  con <- dbConnect(
-    RPostgres::Postgres(),
-    host = host,
-    port = port,
-    dbname = dbname,
-    user = user,
-    password = password,
-    sslmode = "require"
-  )
-  return(con)
-}
 
-#Call DB connection function
-con<-connectDB()
-
-## Some useful DB debug commands:
+## Data re-formatting and calculation of ratios and 4DR
 #----
-print(dbGetQuery(con, "SELECT current_database() AS db, current_user AS user, inet_server_addr() AS server_ip;"))
-print(dbListTables(con))           # lists tables in the search_path
-#----
-
-## Load data from database
-match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
-init_4dr_table<-dbReadTable(con, "4DR_initialiser")
-
-# Format data and sort-by date
-match_table$date_time <- ymd_hms(match_table$date_time) #Convert to lubridate date/time format
-match_table <- match_table %>% arrange(date_time) #Sort table by date_time
-
 # Add Days of the Week:
 match_table$dow<-as.character(wday(match_table$date_time, label=TRUE))
 
 # Find number of games(=rows) in match_table:
 game_max<-nrow(match_table)
-
 # Create empty data.frame to store results in 'long' format (i.e. one row per player per game)
 match_table_long <- data.frame(ID=character(),
                                date_time=as.Date(character()), #update to 'date_time' 19032026
@@ -556,29 +558,35 @@ match_table_long <- data.frame(ID=character(),
 
 
 # Reformat to long format (see above) and store in match_table_long:
+# Might at some point be safer to check this with game id?
 for (i in 1:game_max){
-  row1<-match_table[i,] %>%
+  row1<-match_table[i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%  // match_table$game_no==i
     select(ID=p1,partner=p2,opp1=p3,opp2=p4,score_side=p1p2_score,score_opp=p3p4_score,score_method,
            location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
   row1$game<-i
   
-  row2<-match_table[i,] %>%
+  row2<-match_table[i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%
     select(ID=p2,partner=p1,opp1=p3,opp2=p4,score_side=p1p2_score,score_opp=p3p4_score,score_method,
            location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
   row2$game<-i
   
-  row3<-match_table[i,] %>%
+  row3<-match_table[i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%
     select(ID=p3,partner=p4,opp1=p1,opp2=p2,score_side=p3p4_score,score_opp=p1p2_score,score_method,
            location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
   row3$game<-i
   
-  row4<-match_table[i,] %>%
+  row4<-match_table[i,] %>%# mutate(date=as.Date(date,format = "%d/%m/%y")) %>%
     select(ID=p4,partner=p3,opp1=p1,opp2=p2,score_side=p3p4_score,score_opp=p1p2_score,score_method,
            location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
   row4$game<-i
   
   match_table_long<-bind_rows(match_table_long,row1,row2,row3,row4)
 }
+
+
+print("4DR table summary") # DEBUG
+print(summary(init_4dr_table)) # DEBUG
+
 
 # All players:
 player_list<-unique(match_table_long$ID) # I think this should now be pullede straight from member list??
