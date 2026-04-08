@@ -584,7 +584,6 @@ game_max<-nrow(match_table)
 match_table_long <- data.frame(ID=character(),
                                date_time=as.Date(character()), #update to 'date_time' 19032026
                                dow=character(),
-                               #time=character(), # removed 19032026
                                game=integer(),
                                partner=character(), 
                                opp1=character(), 
@@ -663,10 +662,38 @@ fourDR_returns<-fourDRCalc_zeroSum() #updated - zero sum version; simultaneous g
 rank_table<-fourDR_returns$ranks
 sequential_ranks<-fourDR_returns$seqRanks
 
-# Return tables to database:
+## Return tables to database:
 #match_table_long
 #rank_table
 #sequential_ranks
+
+# UPSERT ranks:
+cols <- names(rank_table) # columns to insert
+col_list <- paste(sprintf('"%s"', cols), collapse = ", ")
+val_list <- paste(rep("?", length(cols)), collapse = ", ")
+
+# Conflict Key column(s) (must have a UNIQUE/PK constraint)
+conflict_cols <- c("name") # e.g. c("date_time","location","court_rank","p1","p2",...)
+
+conflict_target <- paste(sprintf('"%s"', conflict_cols), collapse = ", ")
+
+# Update all columns except the conflict key columns
+update_cols <- setdiff(cols, conflict_cols)
+set_clause <- paste(
+  sprintf('"%s" = EXCLUDED."%s"', update_cols, update_cols),
+  collapse = ", "
+)
+
+sql <- sprintf(
+  'INSERT INTO public."4DR_current" (%s) VALUES (%s)
+   ON CONFLICT (%s) DO UPDATE SET %s;',
+  col_list, val_list, conflict_target, set_clause
+)
+
+# Execute (parameterized)
+for (i in seq_len(nrow(rank_table))) {
+  DBI::dbExecute(con, sql, params = as.list(rank_table[i, , drop = TRUE]))
+}
 
 
 ## app.R ##
