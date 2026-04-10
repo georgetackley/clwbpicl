@@ -581,9 +581,11 @@ sequential_ranks$rank4dr<-sequential_ranks$rank
 # Add Days of the Week:
 match_table$dow<-as.character(wday(match_table$date_time, label=TRUE))
 
-# # Format data and sort-by date
-# match_table$date_time <- ymd_hms(match_table$date_time) #Convert to lubridate date/time format
-# match_table <- match_table %>% arrange(date_time) #Sort table by date_time
+# Format data and sort-by date
+match_table$date_time <- ymd_hms(match_table$date_time) #Convert to lubridate date/time format
+match_table <- match_table %>% arrange(date_time) #Sort table by date_time
+
+
 # 
 # 
 # # Find number of games(=rows) in match_table:
