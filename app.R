@@ -700,7 +700,7 @@ ui <- page_fluid(
   div(img(src='logo.png', width="20%",style="max-width:150px; height:auto; padding:15px;"), style="text-align: center;"),
   titlePanel(h1("Clwb Picl Stats", align="center")),
   div(tags$a("Return to Main site",href="https://cardiffpickleballclub.wordpress.com/"), style="text-align: center;"),
-  fluidRow(column(actionButton("update","Update"), align="center")),
+  fluidRow(column(10,actionButton("update","Update"), align="center")),
   
   # Leaderboards:
   card(card_header("Ladder Leaderboards"),
