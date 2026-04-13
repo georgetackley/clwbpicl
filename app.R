@@ -562,8 +562,8 @@ con<-connectDB()
 
 ## Some useful DB debug commands:
 #----
-print(dbGetQuery(con, "SELECT current_database() AS db, current_user AS user, inet_server_addr() AS server_ip;"))
-print(dbListTables(con))           # lists tables in the search_path
+#print(dbGetQuery(con, "SELECT current_database() AS db, current_user AS user, inet_server_addr() AS server_ip;"))
+#print(dbListTables(con))           # lists tables in the search_path
 #----
 
 loadDataDB<-function(){
