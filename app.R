@@ -601,12 +601,13 @@ match_table_long <- all_data$mtl
 server <- function(input, output) {
   #Data update button:
   observeEvent(input$update, {
-    all_data<-loadDataDB()
+    all_data<-loadDataDB() # re-loads data from DB
     match_table <- all_data$mt
     init_4dr_table<-all_data$init4dr
     rank_table<-all_data$current4dr
     sequential_ranks<-all_data$seq
     match_table_long <- all_data$mtl
+    session$reload() #reloads current session
   })
   #Ladder leaderboards:
   output$thu_ladder <- renderFormattable({
