@@ -566,27 +566,43 @@ print(dbGetQuery(con, "SELECT current_database() AS db, current_user AS user, in
 print(dbListTables(con))           # lists tables in the search_path
 #----
 
-## Load data from database
-match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
-init_4dr_table<-dbReadTable(con, "4DR_initialiser")
-rank_table<-dbReadTable(con, "4DR_current")
-sequential_ranks<-dbReadTable(con, "sequential_ranks")
-match_table_long <- dbReadTable(con, "match_table_long")
+loadDataDB<-function(){
+  ## Load data from database
+  match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
+  init_4dr_table<-dbReadTable(con, "4DR_initialiser")
+  rank_table<-dbReadTable(con, "4DR_current")
+  sequential_ranks<-dbReadTable(con, "sequential_ranks")
+  match_table_long <- dbReadTable(con, "match_table_long")
+  
+  ## Re-cast some columns (this can be tidied in the future)
+  rank_table$ID<-rank_table$name
+  sequential_ranks$ID<-sequential_ranks$name
+  sequential_ranks$rank4dr<-sequential_ranks$rank
+  
+  # Add Days of the Week:
+  match_table$dow<-as.character(wday(match_table$date_time, label=TRUE))
+  
+  # Format data and sort-by date
+  match_table$date_time <- ymd_hms(match_table$date_time) #Convert to lubridate date/time format
+  match_table <- match_table %>% arrange(date_time) #Sort table by date_time
+  
+  return_list<-list("mt"=match_table,"init4dr"=init_4dr_table,"current4dr"=rank_table,"seq"=sequential_ranks,"mtl"=match_table_long)
+}
 
-## Re-cast some columns (this can be tidied in the future)
-rank_table$ID<-rank_table$name
-sequential_ranks$ID<-sequential_ranks$name
-sequential_ranks$rank4dr<-sequential_ranks$rank
+all_data<-loadDataDB()
+match_table <- all_data$mt
+init_4dr_table<-all_data$init4dr
+rank_table<-all_data$current4dr
+sequential_ranks<-all_data$seq
+match_table_long <- all_data$mtl
 
-# Add Days of the Week:
-match_table$dow<-as.character(wday(match_table$date_time, label=TRUE))
-
-# Format data and sort-by date
-match_table$date_time <- ymd_hms(match_table$date_time) #Convert to lubridate date/time format
-match_table <- match_table %>% arrange(date_time) #Sort table by date_time
 
 ## app.R ##
 server <- function(input, output) {
+  #Data update button:
+  observeEvent(input$update, {
+    # update function contents
+  })
   #Ladder leaderboards:
   output$thu_ladder <- renderFormattable({
     thu_stats<-match_table_long %>% filter(dow %in% "Thu" & event_type %in% "ladder")
