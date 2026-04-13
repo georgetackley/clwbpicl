@@ -607,6 +607,7 @@ server <- function(input, output) {
     rank_table<-all_data$current4dr
     sequential_ranks<-all_data$seq
     match_table_long <- all_data$mtl
+    session$allowReconnect("TRUE")
     session$reload() #reloads current session
   })
   #Ladder leaderboards:
