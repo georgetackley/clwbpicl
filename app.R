@@ -600,28 +600,19 @@ match_table_long <- all_data$mtl
 ## app.R ##
 server <- function(input, output) {
   #Data update code:
-  run_update <- reactive({
-    all_data<-loadDataDB() # re-loads data from DB
-    match_table <- all_data$mt
-    init_4dr_table<-all_data$init4dr
-    rank_table<-all_data$current4dr
-    sequential_ranks<-all_data$seq
-    match_table_long <- all_data$mtl
-  }) %>% bindEvent(input$update)
-  
-  output$time_string <- renderText({
-    paste("Data re-loaded, ", as.character(floor_date(ymd_hms(Sys.time()))),run_update())
-  })
-  
-  # observeEvent(input$update, {
+  # run_update <- reactive({
   #   all_data<-loadDataDB() # re-loads data from DB
   #   match_table <- all_data$mt
   #   init_4dr_table<-all_data$init4dr
   #   rank_table<-all_data$current4dr
   #   sequential_ranks<-all_data$seq
   #   match_table_long <- all_data$mtl
-  #   #session$reload() #reloads current session ... doesn't work smoothly ... may not be needed!?
+  # }) %>% bindEvent(input$update)
+  # 
+  # output$time_string <- renderText({
+  #   paste("Data re-loaded, ", as.character(floor_date(ymd_hms(Sys.time()))),run_update())
   # })
+  
   
   #Ladder leaderboards:
   output$thu_ladder <- renderFormattable({
