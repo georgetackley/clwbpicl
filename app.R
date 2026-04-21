@@ -599,16 +599,30 @@ match_table_long <- all_data$mtl
 
 ## app.R ##
 server <- function(input, output) {
-  #Data update button:
-  observeEvent(input$update, {
+  #Data update code:
+  run_update <- reactive({
     all_data<-loadDataDB() # re-loads data from DB
     match_table <- all_data$mt
     init_4dr_table<-all_data$init4dr
     rank_table<-all_data$current4dr
     sequential_ranks<-all_data$seq
     match_table_long <- all_data$mtl
-    #session$reload() #reloads current session ... doesn't work smoothly ... may not be needed!?
+  }) %>% bindEvent(input$update)
+  
+  output$time_string <- renderText({
+    paste("Data re-loaded, ", as.character(floor_date(ymd_hms(Sys.time()))),run_update())
   })
+  
+  # observeEvent(input$update, {
+  #   all_data<-loadDataDB() # re-loads data from DB
+  #   match_table <- all_data$mt
+  #   init_4dr_table<-all_data$init4dr
+  #   rank_table<-all_data$current4dr
+  #   sequential_ranks<-all_data$seq
+  #   match_table_long <- all_data$mtl
+  #   #session$reload() #reloads current session ... doesn't work smoothly ... may not be needed!?
+  # })
+  
   #Ladder leaderboards:
   output$thu_ladder <- renderFormattable({
     thu_stats<-match_table_long %>% filter(dow %in% "Thu" & event_type %in% "ladder")
@@ -722,7 +736,9 @@ ui <- page_fluid(
   div(img(src='logo.png', width="20%",style="max-width:150px; height:auto; padding:15px;"), style="text-align: center;"),
   titlePanel(h1("Clwb Picl Stats", align="center")),
   div(tags$a("Return to Main site",href="https://cardiffpickleballclub.wordpress.com/"), style="text-align: center;"),
-  fluidRow(column(4),column(4,actionButton("update","Update"), align="center"),column(4)),
+  fluidRow(column(4),column(4,actionButton("update","Re-load Data"),
+                            textOutput("time_string"),
+                            align="center"),column(4)),
   
   # Leaderboards:
   card(card_header("Ladder Leaderboards"),
