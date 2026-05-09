@@ -748,7 +748,7 @@ ui <- page_fluid(
     #)
   ),
   #card(),
-  col_widths = c(-2, 4, -2),fillable = TRUE
+  col_widths = c(-2, 4, -2)
   ),
   # Selection drop-downs:
   card(
