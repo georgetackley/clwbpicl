@@ -722,7 +722,7 @@ server <- function(input, output) {
   )
 }
 
-ui <- page_fillable(
+ui <- page_fluid(
   #title="CPC Stats",
   #tags$head(includeHTML("google_analytics.html")), #Google analytics tie-in
   #div(img(src='logo.png', width="20%",style="max-width:150px; height:auto; padding:15px;"), style="text-align: center;"),
