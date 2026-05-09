@@ -723,15 +723,8 @@ server <- function(input, output) {
 }
 
 ui <- page_fluid(
-  #title="CPC Stats",
-  #tags$head(includeHTML("google_analytics.html")), #Google analytics tie-in
-  #div(img(src='logo.png', width="20%",style="max-width:150px; height:auto; padding:15px;"), style="text-align: center;"),
-  #titlePanel(h1("Clwb Picl Stats", align="center")),
   titlePanel("Clwb Picl Stats"),
   div(tags$a("Return to Main site",href="https://cardiffpickleballclub.wordpress.com/"), style="text-align: center;"),
-  #fluidRow(column(4),column(4,actionButton("update","Re-load Data"),
-   #                         textOutput("time_string"),
-    #                        align="center"),column(4)),
   
   # Leaderboards:
   layout_columns(
@@ -739,16 +732,11 @@ ui <- page_fluid(
     card(card_header("CPC Common Ladder"),
          div(p(paste0("(Last updated: ",
                       as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
-         #layout_columns(
-         #card(card_header("LLC Thursday"),
-         #     formattableOutput("thu_ladder")),
-         #card(),
-         #card(
-         #card_header("CPC Common Ladder"),
          formattableOutput("cpc_ladder")
     ),
     col_widths = c(5,7)
   ),
+  
   # Selection drop-downs:
   card(
   layout_column_wrap(
