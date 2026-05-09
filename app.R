@@ -738,8 +738,8 @@ ui <- page_fluid(
   layout_columns(
     #card(card_header("LLC Thursday"),
     #     formattableOutput("thu_ladder")),
-    card(card_header("CPC Collective Ladder"),
-               formattableOutput("cpc_ladder"))
+    card(card_header("CPC Common Ladder"),
+               formattableOutput("cpc_ladder",width = 400))
   )),
   # Selection drop-downs:
   card(
