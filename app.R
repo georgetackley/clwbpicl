@@ -723,10 +723,11 @@ server <- function(input, output) {
 }
 
 ui <- page_fluid(
-  title = "CPC Stats",
+  #title="CPC Stats",
   #tags$head(includeHTML("google_analytics.html")), #Google analytics tie-in
   #div(img(src='logo.png', width="20%",style="max-width:150px; height:auto; padding:15px;"), style="text-align: center;"),
-  titlePanel(h1("Clwb Picl Stats", align="center")),
+  #titlePanel(h1("Clwb Picl Stats", align="center")),
+  titlePanel("Clwb Picl Stats"),
   div(tags$a("Return to Main site",href="https://cardiffpickleballclub.wordpress.com/"), style="text-align: center;"),
   #fluidRow(column(4),column(4,actionButton("update","Re-load Data"),
    #                         textOutput("time_string"),
