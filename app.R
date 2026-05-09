@@ -734,7 +734,7 @@ ui <- page_fluid(
   
   # Leaderboards:
   layout_columns(
-  card(div(img(src='logo.png', width="20%",style="max-width:150px; height:auto; padding:15px;"),style="min-width:150px;")),
+  card(div(img(src='logo.png', width="100%"),style="min-width:150px;")),
   card(card_header("CPC Common Ladder"),
        div(p(paste0("(Last updated: ",as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
   #layout_columns(
