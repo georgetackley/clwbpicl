@@ -734,7 +734,7 @@ ui <- page_fluid(
   
   # Leaderboards:
   layout_columns(
-  #  card(),
+  card(img(src='logo.png', width="20%",style="max-width:150px; height:auto; padding:15px;")),
   card(card_header("CPC Common Ladder"),
        div(p(paste0("(Last updated: ",as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
   #layout_columns(
@@ -746,9 +746,8 @@ ui <- page_fluid(
                formattableOutput("cpc_ladder")#),
     #card(),
     #)
-  ),
+  )
   #card(),
-  col_widths = c(-2, 4, -2)
   ),
   # Selection drop-downs:
   card(
