@@ -733,16 +733,22 @@ ui <- page_fluid(
     #                        align="center"),column(4)),
   
   # Leaderboards:
-  card(card_header("Ladder Leaderboards"),
-       div(p(paste0("(Last updated: ",as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
   layout_columns(
+    card(),
+  card(card_header("CPC Common Ladder"),
+       div(p(paste0("(Last updated: ",as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
+  #layout_columns(
     #card(card_header("LLC Thursday"),
     #     formattableOutput("thu_ladder")),
-    card(),
-    card(card_header("CPC Common Ladder"),
-               formattableOutput("cpc_ladder")),
-    card(),
-  )),
+    #card(),
+    #card(
+      #card_header("CPC Common Ladder"),
+               formattableOutput("cpc_ladder")#),
+    #card(),
+    #)
+  ),
+  card()
+  ),
   # Selection drop-downs:
   card(
   layout_column_wrap(
