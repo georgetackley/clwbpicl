@@ -633,7 +633,7 @@ server <- function(input, output) {
     }
   })
   
-  output$lhs_ladder <- renderFormattable({
+  output$cpc_ladder <- renderFormattable({
     lhs_stats<-match_table_long %>% filter(location %in% "Llanishen HS" & event_type %in% "ladder")
     if (nrow(lhs_stats) != 0){
       lhs_this<-makeStatTable(lhs_stats)
@@ -736,10 +736,10 @@ ui <- page_fluid(
   card(card_header("Ladder Leaderboards"),
        div(p(paste0("(Last updated: ",as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
   layout_columns(
-    card(card_header("LLC Thursday"),
-         formattableOutput("thu_ladder")),
-    card(card_header("LHS Weekend"),
-               formattableOutput("lhs_ladder"))
+    #card(card_header("LLC Thursday"),
+    #     formattableOutput("thu_ladder")),
+    card(card_header("CPC Collective Ladder"),
+               formattableOutput("cpc_ladder"))
   )),
   # Selection drop-downs:
   card(
