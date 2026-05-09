@@ -740,7 +740,7 @@ ui <- page_fluid(
     #     formattableOutput("thu_ladder")),
     card(),
     card(card_header("CPC Common Ladder"),
-               formattableOutput("cpc_ladder"),
+               formattableOutput("cpc_ladder")),
     card(),
   )),
   # Selection drop-downs:
