@@ -736,7 +736,8 @@ ui <- page_fluid(
   layout_columns(
     card(div(img(src='logo.png', width="100%"))),
     card(card_header("CPC Common Ladder"),
-         div(p(paste0("(Last updated: ",as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
+         div(p(paste0("(Last updated: ",
+                      as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
          #layout_columns(
          #card(card_header("LLC Thursday"),
          #     formattableOutput("thu_ladder")),
@@ -745,7 +746,7 @@ ui <- page_fluid(
          #card_header("CPC Common Ladder"),
          formattableOutput("cpc_ladder")
     ),
-    col_widths(5,7)
+    col_widths = c(5,7)
   ),
   # Selection drop-downs:
   card(
