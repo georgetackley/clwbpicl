@@ -710,9 +710,9 @@ server <- function(input, output) {
   # })
   
   output$cpc_ladder <- renderFormattable({
-    lhs_stats<-match_table_long %>% filter(location %in% "Llanishen HS" & event_type %in% "ladder")
-    if (nrow(lhs_stats) != 0){
-      lhs_this<-makeStatTable(lhs_stats)
+    leader_stats<-match_table_long %>% filter(event_type %in% "ladder")
+    if (nrow(leader_stats) != 0){
+      lhs_this<-makeStatTable(leader_stats)
       createLeaderBoard_4dr(lhs_this,10)
     } else {
       formattable(as.data.frame("No Data"))
