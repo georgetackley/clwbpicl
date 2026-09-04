@@ -568,7 +568,7 @@ con<-connectDB()
 
 loadDataDB<-function(){
   ## Load data from database
-  match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
+  
   #init_4dr_table<-dbReadTable(con, "4DR_initialiser")
   #rank_table<-dbReadTable(con, "4DR_current")
   #sequential_ranks<-dbReadTable(con, "sequential_ranks")
@@ -577,7 +577,78 @@ loadDataDB<-function(){
     filter(date_time == max(date_time))
   rank_table<-sequential_ranks %>% group_by(name) %>%
     filter(date_time == max(date_time))
-  match_table_long <- dbReadTable(con, "match_table_long")
+  #match_table_long <- dbReadTable(con, "match_table_long")
+  
+  ### Load match data (match_table) and convert to long format (match_table_long):
+  ## Load mastersheet data from DB
+  print("Loading'mastersheet' table rows ...")
+  date_begin <- as.POSIXct(Sys.time())-months(2)
+  sql <- "
+            SELECT *
+            FROM mastersheet
+            WHERE date_time >= $1
+            ORDER BY date_time
+          "
+  match_table <- dbGetQuery(
+    con,
+    sql,
+    params = list(date_begin)
+  )
+  
+  ## Format date and sort-by date
+  match_table$date_time <- ymd_hms(match_table$date_time) #Convert to lubridate date/time format
+  match_table <- match_table %>% arrange(date_time) #Sort table by date_time
+  
+  ## Add Days of the Week:
+  match_table$dow<-as.character(wday(match_table$date_time, label=TRUE))
+  
+  ## Find number of games(=rows):
+  game_max<-nrow(match_table)
+  
+  ### Make match_table_long
+  ## Create empty data.frame to store results in 'long' format (i.e. one row per player per game)
+  match_table_long <- data.frame(ID=character(),
+                                 date_time=as.Date(character()), #update to 'date_time' 19032026
+                                 dow=character(),
+                                 game=integer(),
+                                 partner=character(),
+                                 opp1=character(),
+                                 opp2=character(),
+                                 score_side=integer(),
+                                 score_opp=integer(),
+                                 score_method=character(),
+                                 location=character(),
+                                 indoor=integer(),
+                                 no_of_courts=integer(),
+                                 court_rank=integer(),
+                                 event_type=character(),
+                                 stringsAsFactors = FALSE)
+  
+  
+  ## Reformat to long format (see above) and store in match_table_long:
+  for (i in 1:game_max){
+    row1<-all_rows[i,] %>%
+      select(ID=p1,partner=p2,opp1=p3,opp2=p4,score_side=p1p2_score,score_opp=p3p4_score,score_method,
+             location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
+    row1$game<-i
+    
+    row2<-all_rows[i,] %>%
+      select(ID=p2,partner=p1,opp1=p3,opp2=p4,score_side=p1p2_score,score_opp=p3p4_score,score_method,
+             location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
+    row2$game<-i
+    
+    row3<-all_rows[i,] %>%
+      select(ID=p3,partner=p4,opp1=p1,opp2=p2,score_side=p3p4_score,score_opp=p1p2_score,score_method,
+             location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
+    row3$game<-i
+    
+    row4<-all_rows[i,] %>%
+      select(ID=p4,partner=p3,opp1=p1,opp2=p2,score_side=p3p4_score,score_opp=p1p2_score,score_method,
+             location,date_time=date_time,dow=dow,indoor,no_of_courts,court_rank,event_type)
+    row4$game<-i
+    
+    match_table_long<-bind_rows(match_table_long,row1,row2,row3,row4)
+  }
   
   ## Re-cast some columns (this can be tidied in the future)
   rank_table$ID<-rank_table$name
