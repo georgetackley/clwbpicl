@@ -598,7 +598,7 @@ con<-connectDB()
 
 loadDataDB<-function(){
   ## Load data from database
-  date_begin <- as.POSIXct(Sys.time())-months(2)
+  date_begin <- as.POSIXct(Sys.time())-months(3)
   #init_4dr_table<-dbReadTable(con, "4DR_initialiser")
   #rank_table<-dbReadTable(con, "4DR_current")
   #sequential_ranks<-dbReadTable(con, "sequential_ranks")
