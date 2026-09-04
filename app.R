@@ -715,29 +715,7 @@ server <- function(input, output) {
      match_table_long <- all_data$mtl
      print(dbListTables(con))
    }) %>% bindEvent(input$update)
-   
-  # output$time_string <- renderText({
-  #   paste("Data re-loaded, ", as.character(floor_date(ymd_hms(Sys.time()))),run_update())
-  # })
   
-  
-  #Ladder leaderboards:
-  # output$thu_ladder <- renderFormattable({
-  #   thu_stats<-match_table_long %>% filter(dow %in% "Thu" & event_type %in% "ladder")
-  #   if (nrow(thu_stats) != 0){
-  #     thu_this<-makeStatTable(thu_stats)
-  #     last_session<-max(as_date(thu_stats$date_time))
-  #     if (nrow(thu_stats[thu_stats$date_time < last_session,])==0){
-  #       print("No previous dates for Thu leaderboard comparison")
-  #       thu_prev <- 0
-  #     } else {
-  #       thu_prev<-makeStatTable(thu_stats[thu_stats$date_time < last_session,])
-  #     }
-  #     createLeaderBoard(thu_this,thu_prev,10)
-  #   } else {
-  #     formattable(as.data.frame("No Data"))
-  #   }
-  # })
   
   output$cpc_ladder <- renderFormattable({
     leader_stats<-match_table_long %>% filter(event_type %in% "ladder")
@@ -865,9 +843,14 @@ ui <- page_fluid(
                                    c("Both",
                                      "Indoor","Outdoor")),
                        selectInput("date",
-                                   "Date:",
+                                   "Start date:",
                                    c("All",
-                                     unique(as.character(as_date(match_table$date_time))))))
+                                     unique(as.character(as_date(match_table$date_time))))),
+                       selectInput("date_end",
+                                   "End date:",
+                                   c("All",
+                                     unique(as.character(as_date(match_table$date_time)))))
+                       )
   ),
   layout_columns(checkboxInput("rotate", "Rotate charts? (ideal for smartphones)", FALSE))
   ),
