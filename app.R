@@ -771,7 +771,7 @@ server <- function(input, output) {
     leader_stats<-match_table_long %>% filter(event_type %in% "ladder")
     if (nrow(leader_stats) != 0){
       #lhs_this<-makeStatTable(leader_stats)
-      createLeaderBoard_4dr_simple(rank_table,10)
+      createLeaderBoard_4dr_simple(rank_table,20)
     } else {
       formattable(as.data.frame("No Data"))
     }
