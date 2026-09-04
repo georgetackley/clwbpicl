@@ -529,7 +529,7 @@ createLeaderBoard_4dr_simple<-function(rank_4drs,row_length){
   #Select current rows that match >=50% attendance criteria and create ranks
   current_ladder_table<-rank_4drs %>%
     mutate(rating=rank) %>% select(name,rating) %>% arrange(desc(rating)) %>%
-    mutate(ranks=rank(desc(rating),ties.method = 'max'))
+    mutate(ranks=base::rank(desc(rating),ties.method = 'max'))
   
   #Check 'row_length' for '0' (i.e. all rows) and that it doesn't exceed no. of rows:
   if (row_length > nrow(current_ladder_table)){
