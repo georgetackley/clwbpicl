@@ -525,6 +525,64 @@ createLeaderBoard_4dr<-function(data_instance,row_length){
                    #`change` = improvement_formatter),
                  table.attr = 'style="font-size: 11px;";\"')
 }
+createLeaderBoard_4dr_simple<-function(rank_4drs,row_length){
+  #Select current rows that match >=50% attendance criteria and create ranks
+  current_ladder_table<-rank_4drs %>%
+    mutate(rating=rank) %>% select(name,rating) %>% arrange(desc(rating)) %>%
+    mutate(rank=rank(desc(rating),ties.method = 'max'))
+  
+  #Check 'row_length' for '0' (i.e. all rows) and that it doesn't exceed no. of rows:
+  if (row_length > nrow(current_ladder_table)){
+    row_length <- nrow(current_ladder_table)
+  } else if (row_length == 0) {
+    row_length <- nrow(current_ladder_table)
+  }
+  
+  # #Create table of penultimate session only if data available
+  # if (is.data.frame(data_instance_pen)){ # If the penultimate stats don't exist, this function is passed '0' by server code, i.e. not a data.frame
+  #   penultimate_ladder_table<-data_instance_pen %>%
+  #     mutate(rating=beta) %>% select(ID,rating) %>% arrange(desc(rating)) %>%
+  #     filter(ID %in% current_ladder_table$ID) %>%
+  #     mutate(rank=rank(desc(rating),ties.method = 'max'))
+  #   
+  #   current_ladder_table$change=NA
+  #   for (i in current_ladder_table$ID[current_ladder_table$ID %in% 
+  #                                     penultimate_ladder_table$ID]){
+  #     current_ladder_table[current_ladder_table$ID == i,]$change <-
+  #       penultimate_ladder_table[penultimate_ladder_table$ID == i,]$rank -
+  #       current_ladder_table[current_ladder_table$ID == i,]$rank
+  #   }
+  #   
+  #   # Replace 'NAs', i.e. missing from penultimate ladder, with 'new' to indicate new players
+  #   current_ladder_table$new<-""
+  #   if(length(current_ladder_table[is.na(current_ladder_table$change),]$change)>0){
+  #     current_ladder_table[is.na(current_ladder_table$change),]$new<-"new"
+  #   }
+  # } else {
+  #   current_ladder_table$change<-NA
+  #   current_ladder_table$new<-"new"
+  # }
+  
+  # Generate RANK for current (all data) and preceding week (all data minus current)
+  # Identify new-entrants
+  
+  # Custom formatted:
+  improvement_formatter <- 
+    formatter("span", 
+              style = x ~ style(
+                font.weight = ifelse(x > 0, "bold", ifelse(x < 0, "italic", "normal")),
+                color = ifelse(x > 0, "green", ifelse(x < 0, "red", "black"))),
+              x ~ icontext(ifelse(x>0, "arrow-up", ifelse(x<0,"arrow-down","blank"))))
+  
+  # Formattable table:
+  f<-formattable(current_ladder_table[1:row_length,],
+                 align=c("l","c","c"), #"c","c"),
+                 col.names = c("","rating","rank"), #"Δ", ""),
+                 list(
+                   `rating` = color_tile("transparent","violet")),
+                 #`change` = improvement_formatter),
+                 table.attr = 'style="font-size: 11px;";\"')
+}
 # DB connection function:
 connectDB <- function(){
   
@@ -712,8 +770,8 @@ server <- function(input, output) {
   output$cpc_ladder <- renderFormattable({
     leader_stats<-match_table_long %>% filter(event_type %in% "ladder")
     if (nrow(leader_stats) != 0){
-      lhs_this<-makeStatTable(leader_stats)
-      createLeaderBoard_4dr(lhs_this,10)
+      #lhs_this<-makeStatTable(leader_stats)
+      createLeaderBoard_4dr_simple(rank_table,10)
     } else {
       formattable(as.data.frame("No Data"))
     }
