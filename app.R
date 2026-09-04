@@ -203,7 +203,7 @@ sequential_ranks_calc<-function(ID){
   }
   return(data_output)
 }
-processInputs<-function(indoor,location,day,date,eventType){
+processInputs<-function(indoor,location,day,date,date_end,eventType){
   if(indoor=="Indoor"){
     choice_indoor=1
   } else if(indoor=="Outdoor"){
@@ -227,6 +227,12 @@ processInputs<-function(indoor,location,day,date,eventType){
   }
   # Read-in Date selection
   if(date=="All"){
+    choice_date<-unique(match_table$date_time)
+  } else {
+    choice_date<-match_table$date_time[match_table$date_time>as_date(date) & 
+                                         match_table$date_time<as_date(date)+dhours(24)]
+  }
+  if(date_end=="All"){
     choice_date<-unique(match_table$date_time)
   } else {
     choice_date<-match_table$date_time[match_table$date_time>as_date(date) & 
@@ -730,7 +736,7 @@ server <- function(input, output) {
   # Reactive 'Function' to create match_table_data filtered by input selections.
   filtered_rows <- reactive({
     # Read-in Indoor/Outdoor selection
-    input_vals<-processInputs(input$indoor,input$location,input$day,input$date,input$eventType) # Function returns processed inputs as a list
+    input_vals<-processInputs(input$indoor,input$location,input$day,input$date,input$date_end,input$eventType) # Function returns processed inputs as a list
     list2env(input_vals,envir = .GlobalEnv) # Assigns all list components to global environment
     # Filter:
     data <- match_table_long %>% filter(location %in% choice_location &
