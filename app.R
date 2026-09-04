@@ -568,11 +568,12 @@ con<-connectDB()
 
 loadDataDB<-function(){
   ## Load data from database
-  
+  date_begin <- as.POSIXct(Sys.time())-months(2)
   #init_4dr_table<-dbReadTable(con, "4DR_initialiser")
   #rank_table<-dbReadTable(con, "4DR_current")
   #sequential_ranks<-dbReadTable(con, "sequential_ranks")
   sequential_ranks<-dbReadTable(con, "seq_ranks_init")
+  sequential_ranks<-sequential_ranks[sequential_ranks$date_time>=date_begin,]
   init_4dr_table<-sequential_ranks %>% group_by(name) %>%
     filter(date_time == max(date_time))
   rank_table<-sequential_ranks %>% group_by(name) %>%
@@ -582,7 +583,6 @@ loadDataDB<-function(){
   ### Load match data (match_table) and convert to long format (match_table_long):
   ## Load mastersheet data from DB
   print("Loading'mastersheet' table rows ...")
-  date_begin <- as.POSIXct(Sys.time())-months(2)
   sql <- "
             SELECT *
             FROM mastersheet
