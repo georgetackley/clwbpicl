@@ -569,9 +569,14 @@ con<-connectDB()
 loadDataDB<-function(){
   ## Load data from database
   match_table <- dbReadTable(con, "mastersheet")   # equivalent to SELECT * FROM "mastersheet"
-  init_4dr_table<-dbReadTable(con, "4DR_initialiser")
-  rank_table<-dbReadTable(con, "4DR_current")
-  sequential_ranks<-dbReadTable(con, "sequential_ranks")
+  #init_4dr_table<-dbReadTable(con, "4DR_initialiser")
+  #rank_table<-dbReadTable(con, "4DR_current")
+  rank_table<-sequential_ranks %>% group_by(name) %>%
+    filter(date_time == max(date_time))
+  #sequential_ranks<-dbReadTable(con, "sequential_ranks")
+  sequential_ranks<-dbReadTable(con, "seq_ranks_init")
+  init_4dr_table<-sequential_ranks %>% group_by(name) %>%
+    filter(date_time == max(date_time))
   match_table_long <- dbReadTable(con, "match_table_long")
   
   ## Re-cast some columns (this can be tidied in the future)
