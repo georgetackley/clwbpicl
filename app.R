@@ -538,34 +538,6 @@ createLeaderBoard_4dr_simple<-function(rank_4drs,row_length){
     row_length <- nrow(current_ladder_table)
   }
   
-  # #Create table of penultimate session only if data available
-  # if (is.data.frame(data_instance_pen)){ # If the penultimate stats don't exist, this function is passed '0' by server code, i.e. not a data.frame
-  #   penultimate_ladder_table<-data_instance_pen %>%
-  #     mutate(rating=beta) %>% select(ID,rating) %>% arrange(desc(rating)) %>%
-  #     filter(ID %in% current_ladder_table$ID) %>%
-  #     mutate(rank=rank(desc(rating),ties.method = 'max'))
-  #   
-  #   current_ladder_table$change=NA
-  #   for (i in current_ladder_table$ID[current_ladder_table$ID %in% 
-  #                                     penultimate_ladder_table$ID]){
-  #     current_ladder_table[current_ladder_table$ID == i,]$change <-
-  #       penultimate_ladder_table[penultimate_ladder_table$ID == i,]$rank -
-  #       current_ladder_table[current_ladder_table$ID == i,]$rank
-  #   }
-  #   
-  #   # Replace 'NAs', i.e. missing from penultimate ladder, with 'new' to indicate new players
-  #   current_ladder_table$new<-""
-  #   if(length(current_ladder_table[is.na(current_ladder_table$change),]$change)>0){
-  #     current_ladder_table[is.na(current_ladder_table$change),]$new<-"new"
-  #   }
-  # } else {
-  #   current_ladder_table$change<-NA
-  #   current_ladder_table$new<-"new"
-  # }
-  
-  # Generate RANK for current (all data) and preceding week (all data minus current)
-  # Identify new-entrants
-  
   # Custom formatted:
   improvement_formatter <- 
     formatter("span", 
@@ -577,7 +549,7 @@ createLeaderBoard_4dr_simple<-function(rank_4drs,row_length){
   # Formattable table:
   f<-formattable(current_ladder_table[1:row_length,],
                  align=c("l","c","c"), #"c","c"),
-                 col.names = c("","rating","rank"), #"Δ", ""),
+                 col.names = c("","rating","ranks"), #"Δ", ""),
                  list(
                    `rating` = color_tile("transparent","violet")),
                  #`change` = improvement_formatter),
