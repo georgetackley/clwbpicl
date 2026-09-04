@@ -607,8 +607,8 @@ loadDataDB<-function(){
   date_begin <- as.POSIXct(Sys.time())-months(3)
   #init_4dr_table<-dbReadTable(con, "4DR_initialiser")
   #rank_table<-dbReadTable(con, "4DR_current")
-  #sequential_ranks<-dbReadTable(con, "sequential_ranks")
-  sequential_ranks<-dbReadTable(con, "seq_ranks_init")
+  sequential_ranks<-dbReadTable(con, "sequential_ranks")
+  #sequential_ranks<-dbReadTable(con, "seq_ranks_init")
   sequential_ranks<-sequential_ranks[sequential_ranks$date_time>=date_begin,]
   init_4dr_table<-sequential_ranks %>% group_by(name) %>%
     filter(date_time == max(date_time))
