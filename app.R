@@ -823,8 +823,8 @@ ui <- page_fluid(
     href="https://cardiffpickleballclub.co.uk/", 
     tags$img(src="logo-text.svg", 
              title="CPC Home", 
-             width="600",
-             height="400"
+             width="100",
+             height="40"
     ))),
   #div(img(src='logo-text.svg', width="100%"))),
   
