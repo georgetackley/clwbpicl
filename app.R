@@ -534,8 +534,7 @@ createLeaderBoard_4dr<-function(data_instance,row_length){
 createLeaderBoard_4dr_simple<-function(rank_4drs,row_length){
   #Select current rows that match >=50% attendance criteria and create ranks
   current_ladder_table<-rank_4drs %>%
-    mutate(rating=rank) %>% select(name,rating) %>% arrange(desc(rating)) %>%
-    mutate(ranks=base::rank(desc(rating),ties.method = 'max'))
+    mutate(rating=rank) %>% select(name,rating) %>% arrange(desc(rating))
   
   #Check 'row_length' for '0' (i.e. all rows) and that it doesn't exceed no. of rows:
   if (row_length > nrow(current_ladder_table)){
@@ -554,8 +553,8 @@ createLeaderBoard_4dr_simple<-function(rank_4drs,row_length){
   
   # Formattable table:
   f<-formattable(current_ladder_table[1:row_length,],
-                 align=c("l","c","c"), #"c","c"),
-                 col.names = c("","rating","ranks"), #"Δ", ""),
+                 align=c("l","c"), #,"c","c","c"),
+                 col.names = c("","rating"), #,"ranks", #"Δ", ""),
                  list(
                    `rating` = color_tile("transparent","violet")),
                  #`change` = improvement_formatter),
@@ -826,7 +825,7 @@ ui <- page_fluid(
     ))),
   #div(img(src='logo-text.svg', width="100%"))),
   
-  card(card_header("CPC Common Ladder"),
+  card(card_header("Club Rating (4DR) Leaderboard"),
        div(p(paste0("(Last updated: ",
                     as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
        formattableOutput("cpc_ladder")
