@@ -834,37 +834,40 @@ ui <- page_fluid(
   ),
   
   # Selection drop-downs:
-  card(
-  layout_column_wrap(
-    layout_column_wrap(width="100px",
-                       selectInput("day",
-                                   "Session / Day:",
-                                   c("All","Weekend",
-                                     unique(as.character(match_table$dow)))), # TO-DO - restrict to Thu/Fri/Sun
-                       selectInput("eventType",
-                                   "Event-type:",selected = "ladder",
-                                   c("All",
-                                     unique(as.character(match_table$event_type)))),
-                       selectInput("location",
-                                   "Location:",
-                                   c("All",
-                                     unique(as.character(match_table$location))))),
-    layout_column_wrap(width="100px",
-                       selectInput("indoor",
-                                   "Indoor / Outdoor:",
-                                   c("Both",
-                                     "Indoor","Outdoor")),
-                       selectInput("date",
-                                   "Start date:",
-                                   c("All",
-                                     unique(as.character(as_date(match_table$date_time))))),
-                       selectInput("date_end",
-                                   "End date:",
-                                   c("All",
-                                     unique(as.character(as_date(match_table$date_time)))))
-                       )
-  ),
-  layout_columns(checkboxInput("rotate", "Rotate charts? (ideal for smartphones)", FALSE))
+  layout_columns(
+    card(
+      layout_column_wrap(
+        layout_column_wrap(width="100px",
+                           selectInput("day",
+                                       "Session / Day:",
+                                       c("All","Weekend",
+                                         unique(as.character(match_table$dow)))), # TO-DO - restrict to Thu/Fri/Sun
+                           selectInput("eventType",
+                                       "Event-type:",selected = "ladder",
+                                       c("All",
+                                         unique(as.character(match_table$event_type)))),
+                           selectInput("location",
+                                       "Location:",
+                                       c("All",
+                                         unique(as.character(match_table$location))))),
+        layout_column_wrap(width="100px",
+                           selectInput("indoor",
+                                       "Indoor / Outdoor:",
+                                       c("Both",
+                                         "Indoor","Outdoor")),
+                           selectInput("date",
+                                       "Start date:",
+                                       c("All",
+                                         unique(as.character(as_date(match_table$date_time))))),
+                           selectInput("date_end",
+                                       "End date:",
+                                       c("All",
+                                         unique(as.character(as_date(match_table$date_time)))))
+        )
+      ),
+      layout_columns(checkboxInput("rotate", "Rotate charts? (ideal for smartphones)", FALSE))
+    ),
+    col_widths = c(-2,6,-2)
   ),
   
   
