@@ -249,6 +249,7 @@ processInputs<-function(indoor,location,day,date,date_end,eventType){
                        "choice_location" = choice_location,
                        "choice_day" = choice_day,
                        "choice_date" = choice_date,
+                       "choice_date_end" = choice_date_end,
                        "choice_event_type" = choice_event_type)
   return(input_values) 
 }
