@@ -233,10 +233,10 @@ processInputs<-function(indoor,location,day,date,date_end,eventType){
                                          match_table$date_time<as_date(date)+dhours(24)]
   }
   if(date_end=="All"){
-    choice_date<-unique(match_table$date_time)
+    choice_date_end<-unique(match_table$date_time)
   } else {
-    choice_date<-match_table$date_time[match_table$date_time>as_date(date) & 
-                                         match_table$date_time<as_date(date)+dhours(24)]
+    choice_date_end<-match_table$date_time[match_table$date_time>as_date(date_end) & 
+                                         match_table$date_time<as_date(date_end)+dhours(24)]
   }
   # Read-in Event selection
   if(eventType=="All"){
@@ -742,7 +742,8 @@ server <- function(input, output) {
                                           indoor %in% choice_indoor &
                                           dow %in% choice_day &
                                           event_type %in% choice_event_type &
-                                          date_time %in% choice_date)
+                                          date_time >= choice_date &
+                                          date_time <= choice_date_end)
                                           #date %in% as.POSIXct(choice_date,tz='UTC')) # Changed this for postgres date format compatibility - not sure what the precise format difference was
     data
   })
