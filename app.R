@@ -79,6 +79,44 @@ makeStatTable<-function(stat_data){
       return(tmp_stats_table)
     }
 }
+makeStatTable_simple<-function(stat_data){
+  if(nrow(stat_data)==0){
+    empty_table<-data.frame(c("No data to show - Please try other combinations."))
+    colnames(empty_table)<-"Empty table!"
+    return(empty_table)
+  } else {
+    tmp_player_list<-unique(stat_data$ID)
+    tmp_stats_table<-data.frame(ID=tmp_player_list)
+    tmp_stats_table$gp<-NA
+    tmp_stats_table$gw<-NA
+    tmp_stats_table$ps<-NA
+    tmp_stats_table$pp<-NA
+    tmp_stats_table$rank_4dr<-NA
+    tmp_stats_table$sp<-NA
+    tmp_stats_table$sa<-NA
+    # Look for calcs:
+    for (i in tmp_player_list){
+      tmp_stats_table[tmp_stats_table$ID==i,]$gp<-
+        length(stat_data[stat_data$ID==i,1])
+      tmp_stats_table[tmp_stats_table$ID==i,]$gw<-
+        length(stat_data[stat_data$ID==i &
+                           stat_data$score_side>stat_data$score_opp,1])
+      tmp_stats_table[tmp_stats_table$ID==i,]$ps<-
+        sum(stat_data[stat_data$ID==i,]$score_side)
+      tmp_stats_table[tmp_stats_table$ID==i,]$pp<-
+        sum(stat_data[stat_data$ID==i,]$score_side)+
+        sum(stat_data[stat_data$ID==i,]$score_opp)
+      tmp_stats_table[tmp_stats_table$ID==i,]$rank_4dr<-
+        round(rank_table[rank_table$ID==i,]$rank,4)
+      #NB the following assumes a maximum of ONE 'session' per DATE.
+      tmp_stats_table[tmp_stats_table$ID==i,]$sp<-
+        length(unique(as_date(stat_data[stat_data$ID==i,]$date_time)))
+      tmp_stats_table[tmp_stats_table$ID==i,]$sa<-
+        length(unique(as_date(stat_data$date_time)))
+    }
+    return(tmp_stats_table)
+  }
+}
 makePlot<-function(plot_data,plot_label){
   ## select data
   stats_select<-plot_data %>% select(ID,gw_div_gp,ps_div_pp,adj_ps_div_pp,beta)
@@ -752,7 +790,7 @@ server <- function(input, output) {
   
   output$table <- DT::renderDataTable(DT::datatable({
     # Filter data (with 'filtered_rows') and generate stats table with custom makeStatTable function
-    data_instance<-makeStatTable(filtered_rows())
+    data_instance<-makeStatTable_simple(filtered_rows())
     # Return 'data' from curly parenthases:
     data_instance
   },rownames= FALSE))
