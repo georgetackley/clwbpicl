@@ -226,14 +226,14 @@ processInputs<-function(indoor,location,day,date,date_end,eventType){
     choice_day=day
   }
   # Read-in Date selection
-  if(date=="All"){
-    choice_date<-unique(match_table$date_time)
+  if(date=="First"){
+    choice_date<-min(match_table$date_time)
   } else {
     choice_date<-match_table$date_time[match_table$date_time>as_date(date) & 
                                          match_table$date_time<as_date(date)+dhours(24)]
   }
-  if(date_end=="All"){
-    choice_date_end<-unique(match_table$date_time)
+  if(date_end=="Last"){
+    choice_date_end<-max(match_table$date_time)
   } else {
     choice_date_end<-match_table$date_time[match_table$date_time>as_date(date_end) & 
                                          match_table$date_time<as_date(date_end)+dhours(24)]
@@ -858,11 +858,11 @@ ui <- page_fluid(
                                          "Indoor","Outdoor")),
                            selectInput("date",
                                        "Start date:",
-                                       c("All",
+                                       c("First",
                                          unique(as.character(as_date(match_table$date_time))))),
                            selectInput("date_end",
                                        "End date:",
-                                       c("All",
+                                       c("Last",
                                          unique(as.character(as_date(match_table$date_time)))))
         )
       ),
