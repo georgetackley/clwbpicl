@@ -762,13 +762,13 @@ server <- function(input, output) {
   
   
   output$cpc_ladder <- renderFormattable({
-    leader_stats<-match_table_long %>% filter(event_type %in% "ladder")
-    if (nrow(leader_stats) != 0){
+    #leader_stats<-match_table_long %>% filter(event_type %in% "ladder")
+    #if (nrow(leader_stats) != 0){
       #lhs_this<-makeStatTable(leader_stats)
-      createLeaderBoard_4dr_simple(rank_table,20)
-    } else {
-      formattable(as.data.frame("No Data"))
-    }
+      createLeaderBoard_4dr_simple(rank_table[rank_table$date_time>(as.POSIXct(Sys.time())-months(3)),],20)
+    #} else {
+    #  formattable(as.data.frame("No Data"))
+    #}
   })
   
   # Reactive 'Function' to create match_table_data filtered by input selections.
