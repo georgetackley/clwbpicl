@@ -814,11 +814,11 @@ server <- function(input, output) {
 
 ui <- page_fluid(
   titlePanel("Clwb Picl Stats"),
-  div(tags$a("Return to Main site",href="https://cardiffpickleballclub.wordpress.com/"), style="text-align: center;"),
+  div(tags$a("Return to Main site",href="https://https://cardiffpickleballclub.co.uk/"), style="text-align: center;"),
   
   # Leaderboards:
   layout_columns(
-    card(div(img(src='logo.png', width="100%"))),
+    card(div(img(src='logo-text.svg', width="100%"))),
     card(card_header("CPC Common Ladder"),
          div(p(paste0("(Last updated: ",
                       as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
