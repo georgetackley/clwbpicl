@@ -789,30 +789,30 @@ server <- function(input, output) {
     data_instance
   },rownames= FALSE))
   
-  output$plot_ratios <- renderPlot( 
-    {
-      # Filter data (with 'filtered_rows') and generate stats table with custom makeStatTable function
-      data_instance<-makeStatTable(filtered_rows())
-      
-      ratio_plot<-makePlot(data_instance,paste0('Session / Day: ', input$day,
-                                                  ', Location: ', input$location,
-                                                  ', Indoor/Outdoor: ', input$indoor,
-                                                  ', Date: ', input$date))
-      print(ratio_plot)
-    }
-  ) 
-  output$plot_ratios_tall <- renderPlot( 
-    {
-      # Filter data (with 'filtered_rows') and generate stats table with custom makeStatTable function
-      data_instance<-makeStatTable(filtered_rows())
-      
-      ratio_plot<-makePlotVert(data_instance,paste0('Session / Day: ', input$day,
-                                                      ', Location: ', input$location,
-                                                      ', Indoor/Outdoor: ', input$indoor,
-                                                      ', Date: ', input$date))
-      print(ratio_plot)
-    }
-  )
+  #output$plot_ratios <- renderPlot( 
+  #  {
+  #    # Filter data (with 'filtered_rows') and generate stats table with custom makeStatTable function
+  #     data_instance<-makeStatTable(filtered_rows())
+  #     
+  #     ratio_plot<-makePlot(data_instance,paste0('Session / Day: ', input$day,
+  #                                                 ', Location: ', input$location,
+  #                                                 ', Indoor/Outdoor: ', input$indoor,
+  #                                                 ', Date: ', input$date))
+  #     print(ratio_plot)
+  #   }
+  # ) 
+  # output$plot_ratios_tall <- renderPlot( 
+  #   {
+  #     # Filter data (with 'filtered_rows') and generate stats table with custom makeStatTable function
+  #     data_instance<-makeStatTable(filtered_rows())
+  #     
+  #     ratio_plot<-makePlotVert(data_instance,paste0('Session / Day: ', input$day,
+  #                                                     ', Location: ', input$location,
+  #                                                     ', Indoor/Outdoor: ', input$indoor,
+  #                                                     ', Date: ', input$date))
+  #     print(ratio_plot)
+  #   }
+  # )
   output$plot_4dr <- renderPlot( 
     {
       all_data<-makeStatTable(match_table_long)
@@ -922,13 +922,13 @@ ui <- page_fluid(
                                       conditionalPanel(
                                         condition= "input.table_rows_selected==0",
                                         tags$h4("Select players from table to display individual 4DR plots",style="font-size: 12px;"))))),
-    nav_panel("Ratio plot",
-              conditionalPanel(
-                condition = "input.rotate == true",
-                plotOutput("plot_ratios_tall",height="700px")),
-              conditionalPanel(
-                condition = "input.rotate == false",
-                plotOutput("plot_ratios"))),
+    #nav_panel("Ratio plot",
+    #          conditionalPanel(
+    #            condition = "input.rotate == true",
+    #            plotOutput("plot_ratios_tall",height="700px")),
+    #          conditionalPanel(
+    #            condition = "input.rotate == false",
+    #            plotOutput("plot_ratios"))),
     nav_panel("All 4DR plot",
               conditionalPanel(
                 condition = "input.rotate == true",
