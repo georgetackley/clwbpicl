@@ -824,11 +824,13 @@ ui <- page_fluid(
              title="CPC Home"
     ))),
   #div(img(src='logo-text.svg', width="100%"))),
-  
-  card(card_header("Club Rating (4DR) Leaderboard"),
-       div(p(paste0("(Last updated: ",
-                    as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
-       formattableOutput("cpc_ladder")
+  layout_columns(
+    card(card_header("Club Rating (4DR) Leaderboard"),
+         div(p(paste0("(Last updated: ",
+                      as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
+         formattableOutput("cpc_ladder")
+    ),
+    col_widths = c(-2,6,-2)
   ),
   
   # Selection drop-downs:
