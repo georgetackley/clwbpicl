@@ -822,9 +822,7 @@ ui <- page_fluid(
   card(tags$a(
     href="https://cardiffpickleballclub.co.uk/", 
     tags$img(src="logo-text.svg", 
-             title="CPC Home", 
-             width="100",
-             height="40"
+             title="CPC Home"
     ))),
   #div(img(src='logo-text.svg', width="100%"))),
   
