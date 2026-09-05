@@ -224,14 +224,16 @@ makePlot4drVert<-function(plot_data){
 }
 sequential_ranks_calc<-function(ID){
   id_count=1
-  data_output<-sequential_ranks[0,] # Create empty table with same columns
-  print(sequential_ranks[1:5,])
-  print(summary(sequential_ranks))
+  sequential_ranks_filter<-sequential_ranks %>% filter(date_time >= choice_date,
+                                                       date_time <= choice_date_end)
+  data_output<-sequential_ranks_filter[0,] # Create empty table with same columns
+  print(sequential_ranks_filter[1:5,])
+  print(summary(sequential_ranks_filter))
   while(id_count<=length(ID)){
-    #dates<-unique(sequential_ranks[sequential_ranks$ID==ID[id_count],]$date_time)
-    dates<-unique(as_date(sequential_ranks[sequential_ranks$ID==ID[id_count],]$date_time)) # Isolates unique dates from date-times for each participant (ID)
+    #dates<-unique(sequential_ranks_filter[sequential_ranks_filter$ID==ID[id_count],]$date_time)
+    dates<-unique(as_date(sequential_ranks_filter[sequential_ranks_filter$ID==ID[id_count],]$date_time)) # Isolates unique dates from date-times for each participant (ID)
     for(i in dates){
-      one_row<-sequential_ranks[sequential_ranks$ID==ID[id_count],]
+      one_row<-sequential_ranks_filter[sequential_ranks_filter$ID==ID[id_count],]
       one_row<-one_row[one_row$date_time==
                          max(one_row$date_time[one_row$date_time<(as_date(i)+dhours(24))]),]
       one_row<- one_row %>% arrange(ymd_hms(date_time)) %>% slice(n())
