@@ -817,22 +817,21 @@ ui <- page_fluid(
   #div(tags$a("Return to Main site",href="https://https://cardiffpickleballclub.co.uk/"), style="text-align: center;"),
   
   # Leaderboards:
-  layout_columns(
-    
-    card(tags$a(
-      href="https://https://cardiffpickleballclub.co.uk/", 
-      tags$img(src="logo-text.svg", 
-               title="CPC Home", 
-               width="600",
-               height="400"
+  
+  
+  card(tags$a(
+    href="https://cardiffpickleballclub.co.uk/", 
+    tags$img(src="logo-text.svg", 
+             title="CPC Home", 
+             width="600",
+             height="400"
     ))),
-    #div(img(src='logo-text.svg', width="100%"))),
-    card(card_header("CPC Common Ladder"),
-         div(p(paste0("(Last updated: ",
-                      as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
-         formattableOutput("cpc_ladder")
-    ),
-    col_widths = c(5,7)
+  #div(img(src='logo-text.svg', width="100%"))),
+  
+  card(card_header("CPC Common Ladder"),
+       div(p(paste0("(Last updated: ",
+                    as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
+       formattableOutput("cpc_ladder")
   ),
   
   # Selection drop-downs:
