@@ -915,20 +915,20 @@ ui <- page_fluid(
     #title = "Select a tab ...",
     nav_panel("Table and player 4DR plot",
               width = "600px",
-                                 div(p(paste0("gp = games played; gw = games won;
+              div(p(paste0("gp = games played; gw = games won;
                                                    ps = points scored; pp = points played;
                                                    sp = sessions played; sa = sessions available"),
-                                            style="font-size: 12px;")),
-                                 DT::dataTableOutput("table"),
-                                 #max_height = 300,
-                                      conditionalPanel(
-                                        condition= "input.table_rows_selected!=0",
-                                        plotOutput("plot_4dr_byParticipant")),
-                                      conditionalPanel(
-                                        condition= "input.table_rows_selected==0",
-                                        tags$h4("Select players from table to display individual 4DR plots",
-                                                style="font-size: 12px;"))),
-
+                    style="font-size: 12px;")),
+              div(DT::dataTableOutput("table")),
+              #max_height = 300,
+              div(conditionalPanel(
+                condition= "input.table_rows_selected!=0",
+                plotOutput("plot_4dr_byParticipant")),
+                conditionalPanel(
+                  condition= "input.table_rows_selected==0",
+                  tags$h4("Select players from table to display individual 4DR plots",
+                          style="font-size: 12px;")))),
+    
     nav_panel("All 4DR plot",
               conditionalPanel(
                 condition = "input.rotate == true",
