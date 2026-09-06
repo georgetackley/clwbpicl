@@ -91,9 +91,9 @@ makeStatTable_simple<-function(stat_data){
     tmp_stats_table$gw<-NA
     tmp_stats_table$ps<-NA
     tmp_stats_table$pp<-NA
-    tmp_stats_table$rank_4dr<-NA
-    tmp_stats_table$sp<-NA
-    tmp_stats_table$sa<-NA
+    tmp_stats_table$'4dr'<-NA
+    #tmp_stats_table$sp<-NA
+    #tmp_stats_table$sa<-NA
     # Look for calcs:
     for (i in tmp_player_list){
       tmp_stats_table[tmp_stats_table$ID==i,]$gp<-
@@ -106,13 +106,13 @@ makeStatTable_simple<-function(stat_data){
       tmp_stats_table[tmp_stats_table$ID==i,]$pp<-
         sum(stat_data[stat_data$ID==i,]$score_side)+
         sum(stat_data[stat_data$ID==i,]$score_opp)
-      tmp_stats_table[tmp_stats_table$ID==i,]$rank_4dr<-
+      tmp_stats_table[tmp_stats_table$ID==i,]$'4dr'<-
         round(rank_table[rank_table$ID==i,]$rank,4)
       #NB the following assumes a maximum of ONE 'session' per DATE.
-      tmp_stats_table[tmp_stats_table$ID==i,]$sp<-
-        length(unique(as_date(stat_data[stat_data$ID==i,]$date_time)))
-      tmp_stats_table[tmp_stats_table$ID==i,]$sa<-
-        length(unique(as_date(stat_data$date_time)))
+      #tmp_stats_table[tmp_stats_table$ID==i,]$sp<-
+      #  length(unique(as_date(stat_data[stat_data$ID==i,]$date_time)))
+      #tmp_stats_table[tmp_stats_table$ID==i,]$sa<-
+      #  length(unique(as_date(stat_data$date_time)))
     }
     return(tmp_stats_table)
   }
