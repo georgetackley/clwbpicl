@@ -107,7 +107,7 @@ makeStatTable_simple<-function(stat_data){
         sum(stat_data[stat_data$ID==i,]$score_side)+
         sum(stat_data[stat_data$ID==i,]$score_opp)
       tmp_stats_table[tmp_stats_table$ID==i,]$'4dr'<-
-        round(rank_table[rank_table$ID==i,]$rank,4)
+        round(rank_table[rank_table$ID==i,]$rank,3)
       #NB the following assumes a maximum of ONE 'session' per DATE.
       #tmp_stats_table[tmp_stats_table$ID==i,]$sp<-
       #  length(unique(as_date(stat_data[stat_data$ID==i,]$date_time)))
