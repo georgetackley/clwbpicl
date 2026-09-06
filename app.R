@@ -920,7 +920,7 @@ ui <- page_fluid(
                                                    sp = sessions played; sa = sessions available"),
                                             style="font-size: 12px;")),
                                  DT::dataTableOutput("table"),
-                                 max_height = 300,
+                                 #max_height = 300,
                                       conditionalPanel(
                                         condition= "input.table_rows_selected!=0",
                                         plotOutput("plot_4dr_byParticipant")),
