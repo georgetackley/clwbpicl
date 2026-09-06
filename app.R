@@ -916,14 +916,15 @@ ui <- page_fluid(
                                  card(div(p(paste0("gp = games played; gw = games won;
                                                    ps = points scored; pp = points played;
                                                    sp = sessions played; sa = sessions available"),style="font-size: 12px;")),
-                                 card(DT::dataTableOutput("table"))),
+                                 card(DT::dataTableOutput("table")),
                                  card(max_height = 300,
                                       conditionalPanel(
                                         condition= "input.table_rows_selected!=0",
                                         plotOutput("plot_4dr_byParticipant")),
                                       conditionalPanel(
                                         condition= "input.table_rows_selected==0",
-                                        tags$h4("Select players from table to display individual 4DR plots",style="font-size: 12px;"))))),
+                                        tags$h4("Select players from table to display individual 4DR plots",
+                                                style="font-size: 12px;")))))),
     #nav_panel("Ratio plot",
     #          conditionalPanel(
     #            condition = "input.rotate == true",
