@@ -871,7 +871,8 @@ ui <- page_fluid(
   
   # Selection drop-downs:
   layout_columns(
-    card(
+    div(style="font-size: 12px;",
+        card(
       layout_column_wrap(
         layout_column_wrap(width="100px",
                            selectInput("day",
@@ -902,7 +903,7 @@ ui <- page_fluid(
         )
       ),
       layout_columns(checkboxInput("rotate", "Rotate charts? (ideal for smartphones)", FALSE))
-    ),
+    )),
     col_widths = c(-2,6,-2)
   ),
   
@@ -927,13 +928,7 @@ ui <- page_fluid(
                                         condition= "input.table_rows_selected==0",
                                         tags$h4("Select players from table to display individual 4DR plots",
                                                 style="font-size: 12px;"))))),
-    #nav_panel("Ratio plot",
-    #          conditionalPanel(
-    #            condition = "input.rotate == true",
-    #            plotOutput("plot_ratios_tall",height="700px")),
-    #          conditionalPanel(
-    #            condition = "input.rotate == false",
-    #            plotOutput("plot_ratios"))),
+
     nav_panel("All 4DR plot",
               conditionalPanel(
                 condition = "input.rotate == true",
