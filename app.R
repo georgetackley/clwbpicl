@@ -916,8 +916,8 @@ ui <- page_fluid(
                                  card(div(p(paste0("gp = games played; gw = games won;
                                                    ps = points scored; pp = points played;
                                                    sp = sessions played; sa = sessions available"),
-                                            style="font-size: 12px;"))),
-                                 card(DT::dataTableOutput("table")),
+                                            style="font-size: 12px;")),
+                                 DT::dataTableOutput("table")),
                                  card(max_height = 300,
                                       conditionalPanel(
                                         condition= "input.table_rows_selected!=0",
