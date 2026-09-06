@@ -910,12 +910,13 @@ ui <- page_fluid(
   # Datetable and plots:
   div(style="font-size: 12px;",
   navset_card_underline(
-    title = "Select a tab ...",
+    #title = "Select a tab ...",
     nav_panel("Table and player 4DR plot",
               layout_column_wrap(width = "600px",
                                  card(div(p(paste0("gp = games played; gw = games won;
                                                    ps = points scored; pp = points played;
-                                                   sp = sessions played; sa = sessions available"),style="font-size: 12px;")),
+                                                   sp = sessions played; sa = sessions available"),
+                                            style="font-size: 12px;"))),
                                  card(DT::dataTableOutput("table")),
                                  card(max_height = 300,
                                       conditionalPanel(
@@ -924,7 +925,7 @@ ui <- page_fluid(
                                       conditionalPanel(
                                         condition= "input.table_rows_selected==0",
                                         tags$h4("Select players from table to display individual 4DR plots",
-                                                style="font-size: 12px;")))))),
+                                                style="font-size: 12px;"))))),
     #nav_panel("Ratio plot",
     #          conditionalPanel(
     #            condition = "input.rotate == true",
