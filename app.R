@@ -908,6 +908,7 @@ ui <- page_fluid(
   
   
   # Datetable and plots:
+  layout_columns(
   div(style="font-size: 12px;",
   navset_card_underline(
     #title = "Select a tab ...",
@@ -943,6 +944,7 @@ ui <- page_fluid(
               ),
     )),
   
+  col_widths = c(-2,6,-2))
 )
 
 
