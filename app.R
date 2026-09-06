@@ -911,6 +911,10 @@ ui <- page_fluid(
   div(style="font-size: 12px;",
   navset_card_underline(
     #title = "Select a tab ...",
+    navbar_options = navbar_options(
+      bg = "#0062cc",
+      underline = TRUE
+    ),
     nav_panel("Table and player 4DR plot",
               layout_column_wrap(width = "600px",
                                  card(div(p(paste0("gp = games played; gw = games won;
