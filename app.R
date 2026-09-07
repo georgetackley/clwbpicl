@@ -789,7 +789,7 @@ server <- function(input, output) {
    })
    output$cpc_ladder_M <- renderFormattable({
      createLeaderBoard_4dr_simple(rank_table[rank_table$date_time>(as.POSIXct(Sys.time())-months(2)) & 
-                                               rank_table$sex=="F",],20)
+                                               rank_table$sex=="M",],20)
    })
   
   # Reactive 'Function' to create match_table_data filtered by input selections.
@@ -883,20 +883,19 @@ ui <- page_fluid(
   card(tags$a(
     href="https://cardiffpickleballclub.co.uk/", 
     tags$img(src="logo-text.svg", 
-             title="CPC Home"
-    ))),
+             title="CPC Home")
+    )
+    div(p(paste0("(Last updated: ",
+               as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;"))
+  ),
   #div(img(src='logo-text.svg', width="100%"))),
   layout_columns(
     card(card_header("Female 4DRs"),
-         #div(p(paste0("(Last updated: ",
-          #            as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
          formattableOutput("cpc_ladder_F")
     ),
     card(card_header("Male 4DRs"),
          formattableOutput("cpc_ladder_M")
     ),
-    div(p(paste0("(Last updated: ",
-                 as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;")),
     col_widths = c(-2,3,3,-2)
   ),
   
@@ -904,7 +903,7 @@ ui <- page_fluid(
   layout_columns(
     div(style="font-size: 12px;",
         card(
-      layout_column_wrap(
+          layout_column_wrap(
         layout_column_wrap(width="100px",
                            selectInput("day",
                                        "Session / Day:",
