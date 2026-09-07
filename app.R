@@ -952,8 +952,7 @@ ui <- page_fluid(
                                                    ps = points scored; pp = points played;
                                                    sp = sessions played; sa = sessions available"),
                     style="font-size: 12px;"),
-                  p(paste0("The table displays results from the last 3 months (max)."),
-                    style="font-size: 12px;")),
+                  ),
               div(DT::dataTableOutput("table")),
               #max_height = 300,
               div(conditionalPanel(
