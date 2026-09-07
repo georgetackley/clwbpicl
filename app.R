@@ -896,7 +896,7 @@ ui <- page_fluid(
     card(card_header("Male 4DRs"),
          formattableOutput("cpc_ladder_M")
     ),
-    col_widths = c(-2,3,3,-2)
+    col_widths = c(-1,4,4,-1)
   ),
   
   # Selection drop-downs:
