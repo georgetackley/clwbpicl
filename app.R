@@ -655,6 +655,8 @@ loadDataDB<-function(){
   rank_table<-sequential_ranks %>% group_by(name) %>%
     filter(date_time == max(date_time))
   #match_table_long <- dbReadTable(con, "match_table_long")
+  # Sex data in members table:
+  members<-dbReadTable(con, "members")
   
   ### Load match data (match_table) and convert to long format (match_table_long):
   ## Load mastersheet data from DB
@@ -725,6 +727,12 @@ loadDataDB<-function(){
     
     match_table_long<-bind_rows(match_table_long,row1,row2,row3,row4)
   }
+  
+  # Add sex to match_table_long
+  colnames(members)[colnames(members)=="name"] <- "ID" # make sure matching column name for ID/name
+  match_table_long <- left_join(match_table_long, members[,c("ID","sex")], by="ID")
+  print("Match table long sex: ")
+  print(match_table_long$sex[1:20])
   
   ## Re-cast some columns (this can be tidied in the future)
   rank_table$ID<-rank_table$name
