@@ -890,7 +890,7 @@ ui <- page_fluid(
   ),
   #div(img(src='logo-text.svg', width="100%"))),
   layout_columns(
-    card(card_header(class = "bg-primary.bg-gradient", "Female 4DRs"),
+    card(card_header(class = "bg-primary", "Female 4DRs"),
          formattableOutput("cpc_ladder_F")
     ),
     card(card_header("Male 4DRs"),
