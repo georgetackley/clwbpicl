@@ -884,7 +884,7 @@ ui <- page_fluid(
     href="https://cardiffpickleballclub.co.uk/", 
     tags$img(src="logo-text.svg", 
              title="CPC Home")
-    )
+    ),
     div(p(paste0("(Last updated: ",
                as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;"))
   ),
