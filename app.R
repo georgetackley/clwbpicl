@@ -893,7 +893,7 @@ ui <- page_fluid(
     card(card_header(class = "bg-primary", "Female 4DRs"),
          formattableOutput("cpc_ladder_F")
     ),
-    card(card_header("Male 4DRs"),
+    card(card_header(class = "bg-primary", "Male 4DRs"),
          formattableOutput("cpc_ladder_M")
     ),
     col_widths = c(-1,4,4,-1)
@@ -902,7 +902,7 @@ ui <- page_fluid(
   # Selection drop-downs:
   layout_columns(
     div(style="font-size: 12px;",
-        card(
+        card(class = "bg-primary",
           layout_column_wrap(
         layout_column_wrap(width="100px",
                            selectInput("day",
