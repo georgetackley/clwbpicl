@@ -243,7 +243,7 @@ sequential_ranks_calc<-function(ID){
   }
   return(data_output)
 }
-processInputs<-function(indoor,location,day,date,date_end,eventType){
+processInputs<-function(indoor,location,day,date,date_end,eventType,sex){
   if(indoor=="Indoor"){
     choice_indoor=1
   } else if(indoor=="Outdoor"){
@@ -276,13 +276,21 @@ processInputs<-function(indoor,location,day,date,date_end,eventType){
     choice_date_end<-max(match_table$date_time)
   } else {
     choice_date_end<-match_table$date_time[match_table$date_time>as_date(date_end) & 
-                                         match_table$date_time<as_date(date_end)+dhours(24)]
+                                             match_table$date_time<as_date(date_end)+dhours(24)]
   }
+  
   # Read-in Event selection
-  if(eventType=="All"){
-    choice_event_type=unique(match_table$event_type)
+  #if(eventType=="All"){
+  choice_event_type=unique(match_table$event_type) # default to all - no longer selectable
+  #} else {
+  #  choice_event_type=eventType
+  #}
+  
+  # Read-in sex selection
+  if(sex=="Both"){
+    choice_sex=c("M","F") # May need to include 'other' here
   } else {
-    choice_event_type=eventType
+    choice_sex=sex
   }
   
   input_values <- list("choice_indoor" = choice_indoor,
@@ -290,7 +298,8 @@ processInputs<-function(indoor,location,day,date,date_end,eventType){
                        "choice_day" = choice_day,
                        "choice_date" = choice_date,
                        "choice_date_end" = choice_date_end,
-                       "choice_event_type" = choice_event_type)
+                       "choice_event_type" = choice_event_type,
+                       "choice_sex" = choice_sex)
   return(input_values) 
 }
 fourDRCalc_zeroSum_ORIGINAL<-function(){
@@ -736,6 +745,9 @@ loadDataDB<-function(){
   
   ## Re-cast some columns (this can be tidied in the future)
   rank_table$ID<-rank_table$name
+  rank_table <- left_join(rank_table, members[,c("ID","sex")], by="ID") # add sex
+  print("Rank table sex: ")
+  print(rank_table$sex[1:20])
   sequential_ranks$ID<-sequential_ranks$name
   sequential_ranks$rank4dr<-sequential_ranks$rank
   
@@ -778,13 +790,14 @@ server <- function(input, output) {
   # Reactive 'Function' to create match_table_data filtered by input selections.
   filtered_rows <- reactive({
     # Read-in Indoor/Outdoor selection
-    input_vals<-processInputs(input$indoor,input$location,input$day,input$date,input$date_end,input$eventType) # Function returns processed inputs as a list
+    input_vals<-processInputs(input$indoor,input$location,input$day,input$date,input$date_end,input$eventType,input$sex) # Function returns processed inputs as a list
     list2env(input_vals,envir = .GlobalEnv) # Assigns all list components to global environment
     # Filter:
     data <- match_table_long %>% filter(location %in% choice_location &
                                           indoor %in% choice_indoor &
                                           dow %in% choice_day &
                                           event_type %in% choice_event_type &
+                                          sex %in% choice_sex &
                                           date_time >= choice_date &
                                           date_time <= choice_date_end)
                                           #date %in% as.POSIXct(choice_date,tz='UTC')) # Changed this for postgres date format compatibility - not sure what the precise format difference was
@@ -887,10 +900,13 @@ ui <- page_fluid(
                                        "Session / Day:",
                                        c("All","Weekend",
                                          unique(as.character(match_table$dow)))), # TO-DO - restrict to Thu/Fri/Sun
-                           selectInput("eventType",
-                                       "Event-type:",selected = "ladder",
-                                       c("All",
-                                         unique(as.character(match_table$event_type)))),
+                           #selectInput("eventType",
+                            #           "Event-type:",selected = "ladder",
+                             #          c("All",
+                              #           unique(as.character(match_table$event_type)))),
+                           selectInput("sex",
+                                       "M/F",
+                                       c("Both","M","F")),
                            selectInput("location",
                                        "Location:",
                                        c("All",
