@@ -586,6 +586,9 @@ createLeaderBoard_4dr_simple<-function(rank_4drs,row_length){
   current_ladder_table<-rank_4drs %>%
     mutate(rating=rank) %>% select(name,rating) %>% arrange(desc(rating))
   
+  #Round the 4DR
+  current_ladder_rable$rating<-round(current_ladder_table$rating,3)
+  
   #Check 'row_length' for '0' (i.e. all rows) and that it doesn't exceed no. of rows:
   if (row_length > nrow(current_ladder_table)){
     row_length <- nrow(current_ladder_table)
@@ -867,7 +870,8 @@ ui <- page_fluid(
              title="CPC Home")
     ),
     div(p(paste0("(Last updated: ",
-               as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;"))
+               as_date(ymd_hms(max(match_table$date_time))),")"),style="font-size: 12px;"),
+        p(paste0("NB Leaderboards include only players active within the last 2 months."),style="font-size: 12px;"))
   ),
   #div(img(src='logo-text.svg', width="100%"))),
   layout_columns(
