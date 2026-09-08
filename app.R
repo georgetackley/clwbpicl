@@ -751,7 +751,9 @@ loadDataDB<-function(){
     print("This loop is working!")
     print(n)
     n<-n+1
-    date_diff<-as.numeric(difftime(as.POSIXct(Sys.time()),rank_table[i,]$date_time,units = 'secs'))
+    start_deprection_date<-as.POSIXct("2026-09-01 00:01") # SET THIS to determine when score depreciation occurs from
+    most_recent_date<-max(c(rank_table[i,]$date_time,start_deprection_date))
+    date_diff<-as.numeric(difftime(as.POSIXct(Sys.time()),most_recent_date,units = 'secs'))
     if (date_diff>(2 * 604800)){ # i.e. if the most recent rank is >2weeks ago (in seconds!)
       depreciation<-as.integer(date_diff/604800)*0.01 # i.e. 0.01 * number of weeks in date_diff rounded down to nearest whole week
       if (depreciation>0.2){depreciation=0.2} # Set maximum drop to 20%
