@@ -918,6 +918,9 @@ ui <- page_fluid(
       ),
       layout_columns(checkboxInput("rotate", "Rotate charts? (ideal for smartphones)", FALSE))
     )),
+    div(p(paste0("Default date range ('First' to 'Last') spans 3-months."),
+          style="font-size: 12px;")
+    ),
     col_widths = c(-2,6,-2)
   ),
   
