@@ -744,7 +744,7 @@ loadDataDB<-function(){
   # (NB the server update R script applies depreciation as scores are ENTERED,
   # (this is simply required to depreciate scores as they are VIEWED.
   n=0
-  for(i in nrow(rank_table)){
+  for(i in seq(1:nrow(rank_table))){
     print("This loop is working!")
     print(n)
     n<-n+1
