@@ -751,6 +751,20 @@ loadDataDB<-function(){
   sequential_ranks$ID<-sequential_ranks$name
   sequential_ranks$rank4dr<-sequential_ranks$rank
   
+  # Depreciate "current" ranks if date>2wks ago
+  # (NB the server update R script applies depreciation as scores are ENTERED,
+  # (this is simply required to depreciate scores as they are VIEWED.
+  for(i in nrow(rank_table)){
+    date_diff<-as.numeric(difftime(as.POSIXct(Sys.time()),rank_table[i,]$date_time,units = 'secs'))
+    if (date_diff>(2 * 604800)){ # i.e. if the most recent rank is >2weeks ago (in seconds!)
+      depreciation<-as.integer(date_diff/604800)*0.02 # i.e. 0.02 * number of weeks in date_diff rounded down to nearest whole week
+      if (depreciation>0.2){depreciation=0.2} # Set maximum drop to 20%
+      print(paste0("Depreciation: ",rank_table[i,]$name," was ",rank_table[i,]$rank," ..."))
+      rank_table[i,]$rank <- rank_table[i,]$rank * (1-depreciation)
+      print(paste0("... and is now: ",rank_table[i,]$rank," after ",depreciation," depreciation."))
+    }
+  }
+  
   # Add Days of the Week:
   match_table$dow<-as.character(wday(match_table$date_time, label=TRUE))
   
@@ -768,7 +782,6 @@ rank_table<-all_data$current4dr
 sequential_ranks<-all_data$seq
 match_table_long <- all_data$mtl
 
-
 ## app.R ##
 server <- function(input, output) {
   # Data update code:
@@ -781,7 +794,6 @@ server <- function(input, output) {
      match_table_long <- all_data$mtl
      print(dbListTables(con))
    }) %>% bindEvent(input$update)
-   
    
    output$cpc_ladder_F <- renderFormattable({
      createLeaderBoard_4dr_simple(rank_table[rank_table$date_time>(as.POSIXct(Sys.time())-months(2)) & 
