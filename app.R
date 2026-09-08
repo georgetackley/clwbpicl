@@ -645,12 +645,6 @@ connectDB <- function(){
 #Call DB connection function
 con<-connectDB()
 
-## Some useful DB debug commands:
-#----
-#print(dbGetQuery(con, "SELECT current_database() AS db, current_user AS user, inet_server_addr() AS server_ip;"))
-#print(dbListTables(con))           # lists tables in the search_path
-#----
-
 loadDataDB<-function(){
   ## Load data from database
   date_begin <- as.POSIXct(Sys.time())-months(3)
@@ -669,7 +663,6 @@ loadDataDB<-function(){
   
   ### Load match data (match_table) and convert to long format (match_table_long):
   ## Load mastersheet data from DB
-  print("Loading'mastersheet' table rows ...")
   sql <- "
             SELECT *
             FROM mastersheet
@@ -740,14 +733,10 @@ loadDataDB<-function(){
   # Add sex to match_table_long
   colnames(members)[colnames(members)=="name"] <- "ID" # make sure matching column name for ID/name
   match_table_long <- left_join(match_table_long, members[,c("ID","sex")], by="ID")
-  print("Match table long sex: ")
-  print(match_table_long$sex[1:20])
   
   ## Re-cast some columns (this can be tidied in the future)
   rank_table$ID<-rank_table$name
   rank_table <- left_join(rank_table, members[,c("ID","sex")], by="ID") # add sex
-  print("Rank table sex: ")
-  print(rank_table$sex[1:20])
   sequential_ranks$ID<-sequential_ranks$name
   sequential_ranks$rank4dr<-sequential_ranks$rank
   
@@ -792,7 +781,6 @@ server <- function(input, output) {
      rank_table<-all_data$current4dr
      sequential_ranks<-all_data$seq
      match_table_long <- all_data$mtl
-     print(dbListTables(con))
    }) %>% bindEvent(input$update)
    
    output$cpc_ladder_F <- renderFormattable({
@@ -829,30 +817,6 @@ server <- function(input, output) {
     data_instance
   },rownames= FALSE))
   
-  #output$plot_ratios <- renderPlot( 
-  #  {
-  #    # Filter data (with 'filtered_rows') and generate stats table with custom makeStatTable function
-  #     data_instance<-makeStatTable(filtered_rows())
-  #     
-  #     ratio_plot<-makePlot(data_instance,paste0('Session / Day: ', input$day,
-  #                                                 ', Location: ', input$location,
-  #                                                 ', Indoor/Outdoor: ', input$indoor,
-  #                                                 ', Date: ', input$date))
-  #     print(ratio_plot)
-  #   }
-  # ) 
-  # output$plot_ratios_tall <- renderPlot( 
-  #   {
-  #     # Filter data (with 'filtered_rows') and generate stats table with custom makeStatTable function
-  #     data_instance<-makeStatTable(filtered_rows())
-  #     
-  #     ratio_plot<-makePlotVert(data_instance,paste0('Session / Day: ', input$day,
-  #                                                     ', Location: ', input$location,
-  #                                                     ', Indoor/Outdoor: ', input$indoor,
-  #                                                     ', Date: ', input$date))
-  #     print(ratio_plot)
-  #   }
-  # )
   output$plot_4dr <- renderPlot( 
     {
       all_data<-makeStatTable(match_table_long)
