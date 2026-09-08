@@ -587,7 +587,7 @@ createLeaderBoard_4dr_simple<-function(rank_4drs,row_length){
     mutate(rating=rank) %>% select(name,rating) %>% arrange(desc(rating))
   
   #Round the 4DR
-  current_ladder_rable$rating<-round(current_ladder_table$rating,3)
+  current_ladder_table$rating<-round(current_ladder_table$rating,3)
   
   #Check 'row_length' for '0' (i.e. all rows) and that it doesn't exceed no. of rows:
   if (row_length > nrow(current_ladder_table)){
