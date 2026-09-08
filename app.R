@@ -743,7 +743,11 @@ loadDataDB<-function(){
   # Depreciate "current" ranks if date>2wks ago
   # (NB the server update R script applies depreciation as scores are ENTERED,
   # (this is simply required to depreciate scores as they are VIEWED.
+  n=0
   for(i in nrow(rank_table)){
+    print("This loop is working!")
+    print(n)
+    n<-n+1
     date_diff<-as.numeric(difftime(as.POSIXct(Sys.time()),rank_table[i,]$date_time,units = 'secs'))
     if (date_diff>(2 * 604800)){ # i.e. if the most recent rank is >2weeks ago (in seconds!)
       depreciation<-as.integer(date_diff/604800)*0.02 # i.e. 0.02 * number of weeks in date_diff rounded down to nearest whole week
