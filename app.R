@@ -757,6 +757,7 @@ loadDataDB<-function(){
       if (depreciation>0.2){depreciation=0.2} # Set maximum drop to 20%
       print(paste0("Depreciation: ",rank_table[i,]$name," was ",rank_table[i,]$rank," ..."))
       rank_table[i,]$rank <- rank_table[i,]$rank * (1-depreciation)
+      if (rank_table[i,]$rank < 1){rank_table[i,]$rank <- 1} # Prevent rank falling below zero
       print(paste0("... and is now: ",rank_table[i,]$rank," after ",depreciation," depreciation."))
     } else { print(paste0("No depreciation for ",rank_table[i,]$name)) }
       
