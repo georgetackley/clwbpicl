@@ -830,14 +830,14 @@ server <- function(input, output) {
   
   output$plot_4dr <- renderPlot( 
     {
-      all_data<-makeStatTable_simple(match_table_long)
+      all_data<-makeStatTable(match_table_long)
       fourDR_plot<-makePlot4dr(all_data)
       print(fourDR_plot)
     } 
   )
   output$plot_4dr_tall <- renderPlot( 
     {
-      all_data<-makeStatTable_simple(match_table_long)
+      all_data<-makeStatTable(match_table_long)
       fourDR_plot<-makePlot4drVert(all_data)
       print(fourDR_plot)
     } 
