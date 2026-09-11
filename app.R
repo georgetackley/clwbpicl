@@ -845,7 +845,7 @@ server <- function(input, output) {
   output$plot_4dr_byParticipant <- renderPlot(
     {
       # Filter data (with 'filtered_rows') and generate stats table with custom makeStatTable function
-      data_instance<-makeStatTable(filtered_rows()) # NB this will exclude non-ladder players (i.e. if someone only played in a tournament) but this is critical because it has to duplicate the content of the table created above, so that the row numbers accord.
+      data_instance<-makeStatTable_simple(filtered_rows()) # NB this will exclude non-ladder players (i.e. if someone only played in a tournament) but this is critical because it has to duplicate the content of the table created above, so that the row numbers accord.
       
       rows_index<-input$table_rows_selected
       plot_data<-sequential_ranks_calc(c(data_instance$ID[rows_index]))
