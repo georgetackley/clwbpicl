@@ -269,14 +269,14 @@ processInputs<-function(indoor,location,day,date,date_end,eventType,sex){
   if(date=="First"){
     choice_date<-min(match_table$date_time)
   } else {
-    choice_date<-match_table$date_time[match_table$date_time>as_date(date) & 
-                                         match_table$date_time<as_date(date)+dhours(24)]
+    choice_date<-min(match_table$date_time[match_table$date_time>=as_date(date) & 
+                                         match_table$date_time<=as_date(date)+dhours(24)])
   }
   if(date_end=="Last"){
     choice_date_end<-max(match_table$date_time)
   } else {
-    choice_date_end<-match_table$date_time[match_table$date_time>as_date(date_end) & 
-                                             match_table$date_time<as_date(date_end)+dhours(24)]
+    choice_date_end<-max(match_table$date_time[match_table$date_time>=as_date(date_end) & 
+                                             match_table$date_time<=as_date(date_end)+dhours(24)])
   }
   
   # Read-in Event selection
