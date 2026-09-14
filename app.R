@@ -288,7 +288,8 @@ processInputs<-function(indoor,location,day,date,date_end,eventType,sex){
   
   # Read-in sex selection
   if(sex=="Both"){
-    choice_sex=c("M","F") # May need to include 'other' here
+    choice_sex=unique(match_table_long$sex)
+    #choice_sex=c("M","F") # May need to include 'other' here
   } else {
     choice_sex=sex
   }
